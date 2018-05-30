@@ -9,8 +9,10 @@ build: # ビルド設定
         packages_list: "pipenv"
     - script: # パッケージインストール
       name: pipfile install for pipenv!!
-      code: pipenv install
-
+      code: |
+        pipenv install
+        pipenv shell
+        
     - script:
         name: echo python information
         code: |
