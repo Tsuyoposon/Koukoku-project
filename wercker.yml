@@ -1,15 +1,18 @@
 
-box: wercker/python
+box: python:3.6.0
 
 build:
 
   steps:
     # A step that sets up the python virtual environment
+    - pip-install:
+        requirements_file: ""
+        packages_list: "virtualenv"
+
     - virtualenv:
         name: setup virtual environment
         install_wheel: false # Enable wheel to speed up builds (experimental)
 
-    - pip-install
 
     - script:
         name: echo python information
