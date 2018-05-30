@@ -14,7 +14,7 @@ build: # ビルド設定
 
     - script: # パッケージインストール2
       name: pipfile install for pipenv!!
-      code: pipenv shell
+      code: pipenv run
 
     - script:
         name: echo python information
