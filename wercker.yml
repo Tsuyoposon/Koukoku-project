@@ -1,0 +1,21 @@
+
+box: python:3.6.0
+
+build:
+
+  steps:
+    # A step that sets up the python virtual environment
+    - virtualenv:
+        name: setup virtual environment
+        install_wheel: false # Enable wheel to speed up builds (experimental)
+
+    - pip-install
+
+    - script:
+        name: echo python information
+        code: |
+          echo "python version $(python --version) running"
+          echo "pip version $(pip --version) running"
+    - script:
+        name: sample test code!!
+        code: python -m unittest discover sample_testcode -v
