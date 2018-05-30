@@ -12,7 +12,7 @@ build: # ビルド設定
       name: pipfile install for pipenv!!
       code: |
         pipenv install
-        pipenv run
+        pipenv shell
 
 
     - script:
