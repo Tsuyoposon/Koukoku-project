@@ -6,13 +6,14 @@ build: # ビルド設定
     # pipのinstall設定
     - pip-install:
         requirements_file: ""
+        packages_list: "virtualenv"
         packages_list: "pipenv"
     - script: # パッケージインストール
       name: pipfile install for pipenv!!
       code: |
         pipenv install
         pipenv shell
-        
+
     - script:
         name: echo python information
         code: |
