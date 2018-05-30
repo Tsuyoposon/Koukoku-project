@@ -10,7 +10,9 @@ build: # ビルド設定
         packages_list: "pipenv==7.0.0"
     - script: # パッケージインストール
       name: pipfile install for pipenv!!
-      code: pipenv install
+      code: |
+        pipenv install
+        pipenv run
 
 
     - script:
