@@ -1,18 +1,15 @@
 
 box: python:3.6.0
 
-build:
-
+build: # ビルド設定
   steps:
-    # A step that sets up the python virtual environment
+    # pipのinstall設定
     - pip-install:
         requirements_file: ""
-        packages_list: "virtualenv"
-
-    - virtualenv:
-        name: setup virtual environment
-        install_wheel: false # Enable wheel to speed up builds (experimental)
-
+        packages_list: "pipenv"
+    - script: # パッケージインストール
+      name: pipfile install for pipenv!!
+      code: pipenv install
 
     - script:
         name: echo python information
