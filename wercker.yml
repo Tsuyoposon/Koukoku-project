@@ -1,0 +1,21 @@
+
+box: python:3.6.0
+
+build: # ビルド設定
+  steps:
+    # pipのinstall設定
+    - pip-install:
+        requirements_file: ""
+        packages_list: "virtualenv"
+    - script: # パッケージインストール
+      name: pipfile install for pip!!
+      code: pip install -r requirements.txt
+
+    - script:
+        name: echo python information
+        code: |
+          echo "python version $(python --version) running"
+          echo "pip version $(pip --version) running"
+    - script:
+        name: sample test code!!
+        code: python -m unittest discover sample_testcode -v
