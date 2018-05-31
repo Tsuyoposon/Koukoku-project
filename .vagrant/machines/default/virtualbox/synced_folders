@@ -1,1 +1,0 @@
-{"virtualbox":{"/home/koukoku-system/":{"guestpath":"/home/koukoku-system","hostpath":"/Users/tsuyoshi/git/Koukoku-project","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/tsuyoshi/git/Koukoku-project","disabled":false,"__vagrantfile":true}}}

@@ -18,4 +18,7 @@ echo 'pip install'
 wget https://bootstrap.pypa.io/get-pip.py
 python3.6 get-pip.py
 pip -V
+
+echo 'pipenv install'
 pip install pipenv
+pipenv install

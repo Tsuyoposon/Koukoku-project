@@ -1,5 +1,4 @@
 *.DS_Store
-.vagrant/
 ### https://raw.github.com/github/gitignore/90f149de451a5433aebd94d02d11b0e28843a1af/Python.gitignore
 
 # Byte-compiled / optimized / DLL files
