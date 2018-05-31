@@ -1,6 +1,7 @@
 echo 'start provison_vagrant!!'
 sudo su
-echo $HOME
+cd ../koukoku-system
+echo | pwd
 
 echo 'pyenv install'
 git clone https://github.com/yyuu/pyenv.git ~/.pyenv
@@ -18,4 +19,6 @@ echo 'pip install'
 wget https://bootstrap.pypa.io/get-pip.py
 python3.6 get-pip.py
 pip -V
-pip install pipenv
+
+echo 'install package!!'
+pip install -r requirements.txt
