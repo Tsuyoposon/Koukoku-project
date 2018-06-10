@@ -21,3 +21,7 @@ def webhook_challenge():
 
   # returns properly formatted json response
   return json.dumps(response)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
