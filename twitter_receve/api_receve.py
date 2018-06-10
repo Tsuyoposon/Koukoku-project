@@ -4,6 +4,7 @@ import hmac
 import json
 import os
 from flask import Flask
+from flask import request
 
 
 # Defines a route for the GET request
@@ -12,7 +13,7 @@ app = Flask(__name__)
 def webhook_challenge():
 
   # creates HMAC SHA-256 hash from incomming token and your consumer secret
-  sha256_hash_digest = hmac.new(os.environ['WITTER_CONSUMER_SECRET'], msg=request.args.get('crc_token'), digestmod=hashlib.sha256).digest()
+  sha256_hash_digest = hmac.new("9txEFI1J7FlJI5NfxjKRbtEOk6VE5wP0wXzUvR9KR6EH1m9DtS", msg=request.args.get('crc_token'), digestmod=hashlib.sha256).digest()
 
   # construct response data with base64 encoded hash
   response = {
@@ -24,4 +25,4 @@ def webhook_challenge():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=80)
