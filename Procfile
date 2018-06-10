@@ -1,1 +1,1 @@
-web: python -m unittest discover sample_testcode -v
+web: python twitter_receve/api_receve.py
