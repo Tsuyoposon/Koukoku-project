@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "bento/ubuntu-16.04-i386"
 
-  config.vm.network 'forwarded_port', guest: 3000, host: 3000
+  config.vm.network :private_network, ip: "192.168.33.10"
 
   config.vm.synced_folder './', '/home/koukoku-system/'
 
