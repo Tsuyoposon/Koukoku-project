@@ -9,7 +9,7 @@ from flask import request
 
 # Defines a route for the GET request
 app = Flask(__name__)
-@app.route('/webhooks/twitter', methods=['GET'])
+@app.route('/', methods=['GET'])
 def webhook_challenge():
 
   # creates HMAC SHA-256 hash from incomming token and your consumer secret
@@ -25,4 +25,4 @@ def webhook_challenge():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=8080)
