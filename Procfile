@@ -1,1 +1,1 @@
-web: sudo python twitter_receve/api_receve.py
+web: python app.py
