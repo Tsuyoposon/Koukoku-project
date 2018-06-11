@@ -9,6 +9,7 @@ from flask import request
 
 # Defines a route for the GET request
 app = Flask(__name__)
+app.debug = True
 @app.route('/', methods=['GET'])
 def webhook_challenge():
 
@@ -24,5 +25,6 @@ def webhook_challenge():
   return json.dumps(response)
 
 
-if __name__ == "__main__":
-    app.run()
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(port=port)
