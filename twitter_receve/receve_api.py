@@ -13,9 +13,10 @@ app = Flask(__name__)
 def webhook_challenge():
 
   # creates HMAC SHA-256 hash from incomming token and your consumer secret
-  twitter_byte = bytearray("9txEFI1J7FlJI5NfxjKRbtEOk6VE5wP0wXzUvR9KR6EH1m9DtS", "ASCII")
+  twitter_byte = bytearray("OnKiOJUozZuRj0Xw7GpC5yhJTJ9GnX4P0FxqhhKLS0L24OqBcA", "ASCII")
   crc_token_byte = bytearray(request.args.get('crc_token'), "ASCII")
-  sha256_hash_digest = hmac.new(twitter_byte, msg=crc_token_byte, digestmod=hashlib.sha256).digest()
+  sha256_hash_digest = hmac.new(twitter_byte, crc_token_byte, hashlib.sha256).digest()
+  print(request.args.get('crc_token'))
 
   # construct response data with base64 encoded hash
   response = {
