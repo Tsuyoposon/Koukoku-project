@@ -1,7 +1,7 @@
 
 box: python:3.6.0
 
-build: # ビルド設定
+build: # ビルド設定(パッケージ・ライブラリのインストール確認)
   steps:
     # pipのinstall設定
     - pip-install:
@@ -19,3 +19,9 @@ build: # ビルド設定
     - script:
         name: sample test code!!
         code: python -m unittest discover sample_testcode -v
+
+test-code: # テストコードの実行
+  steps:
+    - script:
+      name: twitter_receve!!
+      code: python -m unittest test_code/twitter_receve_test.py -v

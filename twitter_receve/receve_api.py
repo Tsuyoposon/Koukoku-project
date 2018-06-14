@@ -16,8 +16,6 @@ def webhook_challenge():
   twitter_byte = bytearray(os.environ['TWITTER_CONSUMER_SECRET'], "ASCII")
   crc_token_byte = bytearray(request.args.get('crc_token'), "ASCII")
   sha256_hash_digest = hmac.new(twitter_byte, crc_token_byte, hashlib.sha256).digest()
-  print(os.environ['TWITTER_CONSUMER_SECRET'])
-  print(request.args.get('crc_token'))
 
   # construct response data with base64 encoded hash
   response = {
