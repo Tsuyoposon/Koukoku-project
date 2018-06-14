@@ -23,4 +23,6 @@ test-code: # テストコードの実行!
 
     - script:
       name: twitter_receve!!
-      code: python -m unittest test_code/twitter_receve_test.py -v
+      code: |
+        echo $TWITTER_CONSUMER_SECRET
+        python -m unittest test_code/twitter_receve_test.py -v
