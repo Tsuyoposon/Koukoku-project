@@ -18,6 +18,7 @@ class TestTwitterReceve(unittest.TestCase):
             'response_token': 'sha256=Qe1LDfqj4CGReEd7COcmXOPpt/L+WwLXsFLzAQyN2mc='
         }
         response_body_encode = json.dumps(response_body).encode()
+        print(os.environ['TWITTER_CONSUMER_SECRET'])
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
