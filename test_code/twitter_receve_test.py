@@ -2,7 +2,7 @@ import unittest
 # twitter_receve用テストコード
 import twitter_receve.receve_api
 from flask import Flask, request
-import json
+import json, os
 
 
 class TestTwitterReceve(unittest.TestCase):
