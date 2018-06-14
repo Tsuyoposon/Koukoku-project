@@ -19,8 +19,7 @@ def webhook_challenge():
 
   # construct response data with base64 encoded hash
   response = {
-    # 'response_token': 'sha256=' + base64.b64encode(sha256_hash_digest).decode('ASCII')
-    'response_token': 'sha256=' + twitter_byte.decode('ASCII')
+    'response_token': 'sha256=' + base64.b64encode(sha256_hash_digest).decode('ASCII')
   }
 
   # returns properly formatted json response

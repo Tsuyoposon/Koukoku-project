@@ -15,7 +15,7 @@ class TestTwitterReceve(unittest.TestCase):
         response = self.app.get('/webhooks/twitter?crc_token=foo')
         # レスポンス結果の再現
         response_body = {
-            'response_token': 'sha256=Qe1LDfqj4CGReEd7COcmXOPpt/L+WwLXsFLzAQyN2mc='
+            'response_token': 'sha256=D1UXbLq0ougTycgcBn9pWDTS2jarXz/3wS5yVJniPFY='
         }
         response_body_encode = json.dumps(response_body).encode()
 
