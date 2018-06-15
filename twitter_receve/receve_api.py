@@ -40,7 +40,6 @@ def DM_catch():
 
     # 返信用json
     respon_json = {"status" : "OK"}
-    print(type(respon_json))
 
     # webhookされたイベントがDMの送受信の場合だけ処理する
     if request.json.get("direct_message_events"):
