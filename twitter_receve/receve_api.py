@@ -7,8 +7,9 @@ from flask import Flask
 from flask import request
 
 
-# Defines a route for the GET request
 app = Flask(__name__)
+
+# twitterのwebhook設定
 @app.route('/webhooks/twitter', methods=['GET'])
 def webhook_challenge():
 
@@ -24,6 +25,23 @@ def webhook_challenge():
 
   # returns properly formatted json response
   return json.dumps(response)
+
+
+# DMを受け取った時の処理
+@app.route('/webhooks/twitter', methods=['POST'])
+def DM_catch():
+
+
+
+  print(request.json)
+  print(request.json["direct_message_events"])
+  print(type(request.json))
+  print(len(request.json))
+
+  # webhookされたイベントがDMの送受信の場合だけ処理する
+
+  return json.dumps({ "status": "OK"})
+
 
 
 if __name__ == "__main__":
