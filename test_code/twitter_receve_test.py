@@ -22,23 +22,23 @@ class TestTwitterReceve(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
 
-    def test_twitter_DM(self):
-        # DMがきた時のjsonをロード
-        with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
-            DM_event_json = json.load(DM_event_json_file)
-        # twitterからのDMイベントのAPIを再現
-        response = self.app.post(
-            "/webhooks/twitter",
-            content_type='application/json',
-            data=json.dumps(DM_event_json)
-        )
-
-        # レスポンス結果の再現
-        response_body = {"status" : "Get DM"}
-        response_body_encode = json.dumps(response_body).encode()
-        # レスポンス結果のの照合
-        # self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, response_body_encode)
+    # def test_twitter_DM(self):
+    #     # DMがきた時のjsonをロード
+    #     with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
+    #         DM_event_json = json.load(DM_event_json_file)
+    #     # twitterからのDMイベントのAPIを再現
+    #     response = self.app.post(
+    #         "/webhooks/twitter",
+    #         content_type='application/json',
+    #         data=json.dumps(DM_event_json)
+    #     )
+    #
+    #     # レスポンス結果の再現
+    #     response_body = {"status" : "Get DM"}
+    #     response_body_encode = json.dumps(response_body).encode()
+    #     # レスポンス結果のの照合
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual(response.data, response_body_encode)
 
     def test_twitter_favorite(self):
         # お気に入りされた時のjsonをロード
