@@ -37,7 +37,7 @@ class TestTwitterReceve(unittest.TestCase):
         response_body = {"status" : "Get DM"}
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
-        self.assertEqual(response.status_code, 200)
+        # self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
 
     def test_twitter_favorite(self):
@@ -55,7 +55,7 @@ class TestTwitterReceve(unittest.TestCase):
         response_body = {"status" : "OK"}
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
-        # self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
 
 if __name__ == '__main__':
