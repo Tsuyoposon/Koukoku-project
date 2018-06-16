@@ -6,6 +6,7 @@ import os
 import twitter
 from flask import Flask
 from flask import request
+from watson_developer_cloud import PersonalityInsightsV3
 
 
 app = Flask(__name__)
@@ -14,6 +15,11 @@ twitter_account = twitter.Api(
     consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
     access_token_key=os.environ['ACCESS_TOKEN'],
     access_token_secret=os.environ['ACCESS_TOKEN_SECRET']
+)
+watson_personal_API = PersonalityInsightsV3(
+    version="2017-10-13",
+    username=os.environ['WATSON_UESR_NAME'],
+    password=os.environ['WATSON_PASSWORD']
 )
 
 # twitterのwebhook設定
@@ -40,6 +46,8 @@ def DM_catch():
 
     # 返信用json
     respon_json = {"status" : "OK"}
+    # timelineの文章
+    DM_user_linked_timeline = ""
 
     # webhookされたイベントがDMの送受信の場合だけ処理する
     if request.json.get("direct_message_events"):
@@ -50,6 +58,28 @@ def DM_catch():
         )
         # 返信を”Get DM”に書き換える
         respon_json["status"] = "Get DM"
+
+
+        # 相手のツイート10件を取得
+        DM_user_timeline = twitter_account.GetUserTimeline(
+            request.json["direct_message_events"][0]["message_create"]["sender_id"],
+            count=10
+        )
+        for DM_user_tweet in DM_user_timeline:
+            DM_user_linked_timeline += DM_user_tweet.text
+
+        # watsonにテキストを送る
+        watson_renponse = watson_personal_API.profile(
+            DM_user_linked_timeline,
+            content_type="text/plain",
+            accept="application/json",
+            content_language="ja"
+        )
+
+        print(json.dumps(watson_renponse, indent=2))
+
+        print(DM_user_linked_timeline)
+
 
     return json.dumps(respon_json)
 
