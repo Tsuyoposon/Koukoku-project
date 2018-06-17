@@ -8,7 +8,7 @@ import json, os
 import twitter
 from watson_developer_cloud import PersonalityInsightsV3
 # webhookイベントの時の処理関数
-from . import webhook_process
+from twitter_receve import webhook_process
 
 
 app = Flask(__name__)
@@ -53,7 +53,7 @@ def webhook_catch():
         return webhook_process.follow_catch(twitter_account, watson_personal_API, request, respon_json)
     # webhookイベントがDMの時の処理
     elif request.json.get("direct_message_events"):
-        return webhook_process.DM_catch(twitter_account, watson_personal_API, request, respon_json)
+        return webhook_process.DM_catch(twitter_account, request, respon_json)
     # webhookイベントがそれ以外であれば何もしない
     else:
          return json.dumps(respon_json)
