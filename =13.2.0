@@ -1,8 +1,0 @@
-Collecting watson-developer-cloud
-  Using cached https://files.pythonhosted.org/packages/c7/0f/6b3d46b2847ca60e3ef402b87485cf25e007c2be52c11e41cfa70728ef7c/watson-developer-cloud-1.4.0.tar.gz
-Requirement already satisfied: requests<3.0,>=2.0 in /home/vagrant/.pyenv/versions/3.6.0/lib/python3.6/site-packages (from watson-developer-cloud) (2.18.4)
-Collecting python_dateutil>=2.5.3 (from watson-developer-cloud)
-  Using cached https://files.pythonhosted.org/packages/cf/f5/af2b09c957ace60dcfac112b669c45c8c97e32f94aa8b56da4c6d1682825/python_dateutil-2.7.3-py2.py3-none-any.whl
-Collecting autobahn>=0.10.9 (from watson-developer-cloud)
-  Using cached https://files.pythonhosted.org/packages/c9/7a/140264ec2c162bb22f91be76a11554f8ab0eda9bb2c775b6bc0dbbef0d4a/autobahn-18.6.1-py2.py3-none-any.whl
-Collecting Twisted>=13.2.0 (from watson-developer-cloud)
