@@ -53,10 +53,6 @@ def webhook_catch():
         return webhook_process.follow_catch(twitter_account, watson_personal_API, request, respon_json)
     # webhookイベントがDMの時の処理
     elif request.json.get("direct_message_events"):
-        twitter_account.PostDirectMessage(
-            request.json["direct_message_events"][0]["message_create"]["message_data"]["text"],
-            request.json["direct_message_events"][0]["message_create"]["sender_id"]
-        )
         return webhook_process.DM_catch(twitter_account, request, respon_json)
     # webhookイベントがそれ以外であれば何もしない
     else:

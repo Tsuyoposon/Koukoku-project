@@ -8,7 +8,7 @@ import json
 class TestTwitterReceve(unittest.TestCase):
 
     def setUp(self):
-        self.app = twitter_receve.receve_api.app.test_client()
+        self.app = receve_api.app.test_client()
 
     def test_webhook_challenge(self):
         # twitterからのリクエストAPIを再現

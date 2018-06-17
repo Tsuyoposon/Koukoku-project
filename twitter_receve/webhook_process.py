@@ -27,8 +27,8 @@ def follow_catch(twitter_account, watson_personal_API, request, respon_json):
     DM_user_linked_timeline = ""
     # 相手のツイート10件を取得
     DM_user_timeline = twitter_account.GetUserTimeline(
-    request.json["follow_events"][0]["source"]["id"],
-    count=10
+        request.json["follow_events"][0]["source"]["id"],
+        count=10
     )
     for DM_user_tweet in DM_user_timeline:
         DM_user_linked_timeline += DM_user_tweet.text
