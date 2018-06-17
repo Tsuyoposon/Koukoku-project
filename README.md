@@ -2,8 +2,11 @@
 
 ## プロジェクト開発リンク
 - [Project](https://github.com/Tsuyoposon/Koukoku-project/projects)
+    - 開発スケージュール＆やることリスト
 - [wiki](https://github.com/Tsuyoposon/Koukoku-project/wiki)
-- [Issues](https://github.com/Tsuyoposon/Koukoku-project/issues)
+    - 開発フロー＆ルールの定義
+- [wercker](https://app.wercker.com/Tsuyoposon/Koukoku-project/options)
+    - CI環境
 
 ## プロジェクト概要
 
