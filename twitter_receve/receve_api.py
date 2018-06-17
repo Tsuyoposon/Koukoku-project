@@ -8,7 +8,7 @@ import json, os
 import twitter
 from watson_developer_cloud import PersonalityInsightsV3
 # webhookイベントの時の処理関数
-import webhook_process
+from . import webhook_process
 
 
 app = Flask(__name__)
