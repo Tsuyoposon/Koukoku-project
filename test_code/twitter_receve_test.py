@@ -1,6 +1,6 @@
 import unittest
 # twitter_receve用テストコード
-import twitter_receve.receve_api
+import receve_api
 from flask import Flask, request
 import json
 
