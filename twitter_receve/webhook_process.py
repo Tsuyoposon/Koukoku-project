@@ -9,6 +9,7 @@ import json, os
 # DMをもらった時
 def DM_catch(twitter_account, request, respon_json):
 
+    print(json.dumps(request.json, indent=2))
     # オウム返しでDMを返す
     twitter_account.PostDirectMessage(
         request.json["direct_message_events"][0]["message_create"]["message_data"]["text"],
