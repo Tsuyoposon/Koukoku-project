@@ -8,7 +8,12 @@ echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile
 echo 'eval "$(pyenv init -)"' >> ~/.profile
 source ~/.profile
 
-cd ../koukoku-system
+wget https://twistedmatrix.com/Releases/Twisted/18.4/Twisted-18.4.0.tar.bz2
+tar -jxvf Twisted-18.4.0.tar.bz2
+cd Twisted-18.4.0
+python setup.py install
+
+cd ../../koukoku-system
 echo | pwd
 
 echo 'python3.6 install'
