@@ -22,6 +22,10 @@ def DM_catch(twitter_account, request, respon_json):
 # フォローされた時
 def follow_catch(twitter_account, watson_personal_API, request, respon_json):
 
+    twitter_account.CreateFriendship(
+        request.json["follow_events"][0]["source"]["id"]
+    )
+
     # timelineの文章
     DM_user_linked_timeline = ""
     # 相手のツイート10件を取得
