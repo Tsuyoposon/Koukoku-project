@@ -47,14 +47,13 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
         }
     )
 
-
     # 相手のツイート10件を取得
     DM_user_timeline = requests.get(
         "https://api.twitter.com/1.1/statuses/user_timeline.json",
         auth=twitter_account_auth,
         params={
             "user_id" : request.json["follow_events"][0]["source"]["id"],
-            "count"   : 10
+            "count"   : 1
         }
     )
 
@@ -70,7 +69,6 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
         accept="application/json",
         content_language="ja"
     )
-    print(json.dumps(watson_renponse, indent=2))
     # 返信を”Get follow”に書き換える
     respon_json["status"] = "Get follow"
     return json.dumps(respon_json)

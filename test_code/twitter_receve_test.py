@@ -1,9 +1,53 @@
 import unittest, os
+from unittest import mock
 # twitter_receve用テストコード
 import receve_api
 from flask import Flask, request
 import json
+from watson_developer_cloud import PersonalityInsightsV3
 
+def mocked_twitter_API(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+        def json(self):
+            return self.json_data
+    # DMを送る時のrequest
+    if args[0] == "https://api.twitter.com/1.1/direct_messages/events/new.json":
+        catch_json = json.loads(kwargs["data"])
+        if catch_json["event"]["message_create"]["target"]["recipient_id"] == os.environ['TEST_ACCOUNT_ID'] and \
+        catch_json["event"]["message_create"]["message_data"]["text"] == "こんにちは！":
+            return MockResponse({}, 200)
+        return MockResponse({}, 500)
+    # フォロー返しをする時のrequest
+    elif args[0] == "https://api.twitter.com/1.1/friendships/create.json":
+        if kwargs["params"]["user_id"] == os.environ['TEST_ACCOUNT_ID']:
+            return MockResponse({}, 200)
+        return MockResponse({}, 500)
+    # ツイートを取得する時のrequest
+    elif args[0] == "https://api.twitter.com/1.1/statuses/user_timeline.json":
+        if kwargs["params"]["user_id"] == os.environ['TEST_ACCOUNT_ID']:
+            with open("test_code/test_json/tweet_timeline.json", "r") as tweet_timeline_json_file:
+                tweet_timeline_json = json.load(tweet_timeline_json_file)
+            return MockResponse(tweet_timeline_json, 200)
+        return MockResponse({}, 500)
+
+    return MockResponse({}, 404)
+
+def mocked_watson_API(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+        def json(self):
+            return self.json_data
+
+    if args[0] == "こんばんは":
+        with open("test_code/test_json/watson_result.json", "r") as watson_result_json_file:
+            watson_result_json = json.load(watson_result_json_file)
+        return watson_result_json
+    return MockResponse({}, 500)
 
 class TestTwitterReceve(unittest.TestCase):
 
@@ -22,7 +66,8 @@ class TestTwitterReceve(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
 
-    def test_twitter_DM(self):
+    @mock.patch('requests.post', side_effect=mocked_twitter_API)
+    def test_twitter_DM(self, mock_post):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
@@ -38,14 +83,13 @@ class TestTwitterReceve(unittest.TestCase):
         response_body = {"status" : "Get DM"}
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
-        if os.environ['ENV'] == "wercker":
-            print(os.environ['ENV'])
-            self.assertEqual(response.status_code, 500)
-        else:
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.data, response_body_encode)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, response_body_encode)
 
-    def test_twitter_follow(self):
+    @mock.patch('requests.get', side_effect=mocked_twitter_API)
+    @mock.patch('requests.post', side_effect=mocked_twitter_API)
+    @mock.patch('watson_developer_cloud.PersonalityInsightsV3.profile', side_effect=mocked_watson_API)
+    def test_twitter_follow(self, mock_get, mock_post, mock_watson):
         # followがきた時のjsonをロード
         with open("test_code/test_json/follow_event.json", "r") as follow_event_json_file:
             follow_event_json = json.load(follow_event_json_file)
@@ -61,11 +105,8 @@ class TestTwitterReceve(unittest.TestCase):
         response_body = {"status" : "Get follow"}
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
-        if os.environ['ENV'] == "wercker":
-            self.assertEqual(response.status_code, 500)
-        else:
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.data, response_body_encode)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, response_body_encode)
 
 
     def test_twitter_favorite(self):
