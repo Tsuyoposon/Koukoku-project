@@ -4,6 +4,7 @@ import base64, hashlib, hmac
 from flask import Flask
 from flask import request
 import json, os
+from requests_oauthlib import OAuth1
 # python-twitter用 wastonAPI用
 import twitter
 from watson_developer_cloud import PersonalityInsightsV3
@@ -13,11 +14,11 @@ from twitter_receve import webhook_process
 
 app = Flask(__name__)
 # twitter操作のための認証
-twitter_account = twitter.Api(
-    consumer_key=os.environ['TWITTER_CONSUMER'],
-    consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
-    access_token_key=os.environ['ACCESS_TOKEN'],
-    access_token_secret=os.environ['ACCESS_TOKEN_SECRET']
+twitter_account_auth = OAuth1(
+    os.environ['TWITTER_CONSUMER'],
+    os.environ['TWITTER_CONSUMER_SECRET'],
+    os.environ['ACCESS_TOKEN'],
+    os.environ['ACCESS_TOKEN_SECRET']
 )
 # watsonAPIのための認証
 watson_personal_API = PersonalityInsightsV3(
@@ -50,10 +51,10 @@ def webhook_catch():
 
     # webhookイベントがユーザにフォローされた時の処理
     if request.json.get("follow_events"):
-        return webhook_process.follow_catch(twitter_account, watson_personal_API, request, respon_json)
+        return webhook_process.follow_catch(twitter_account_auth, watson_personal_API, request, respon_json)
     # webhookイベントがDMの時の処理
     elif request.json.get("direct_message_events"):
-        return webhook_process.DM_catch(twitter_account, request, respon_json)
+        return webhook_process.DM_catch(twitter_account_auth, request, respon_json)
     # webhookイベントがそれ以外であれば何もしない
     else:
          return json.dumps(respon_json)
