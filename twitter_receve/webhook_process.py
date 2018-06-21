@@ -9,7 +9,6 @@ import json, os
 # DMをもらった時
 def DM_catch(twitter_account, request, respon_json):
 
-    print(json.dumps(request.json, indent=2))
     # オウム返しでDMを返す
     twitter_account.PostDirectMessage(
         request.json["direct_message_events"][0]["message_create"]["message_data"]["text"],
@@ -22,6 +21,10 @@ def DM_catch(twitter_account, request, respon_json):
 
 # フォローされた時
 def follow_catch(twitter_account, watson_personal_API, request, respon_json):
+
+    twitter_account.CreateFriendship(
+        request.json["follow_events"][0]["source"]["id"]
+    )
 
     # timelineの文章
     DM_user_linked_timeline = ""

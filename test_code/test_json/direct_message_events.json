@@ -11,7 +11,7 @@
 			"sender_id": "3001969357",
 			"source_app_id": "13090192",
 			"message_data": {
-				"text": "Hello World!",
+				"text": "こんにちは",
 				"entities": {
 					"hashtags": [],
 					"symbols": [],

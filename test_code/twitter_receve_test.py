@@ -1,4 +1,4 @@
-import unittest
+import unittest, os
 # twitter_receve用テストコード
 import receve_api
 from flask import Flask, request
@@ -22,23 +22,51 @@ class TestTwitterReceve(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
 
-    # def test_twitter_DM(self):
-    #     # DMがきた時のjsonをロード
-    #     with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
-    #         DM_event_json = json.load(DM_event_json_file)
-    #     # twitterからのDMイベントのAPIを再現
-    #     response = self.app.post(
-    #         "/webhooks/twitter",
-    #         content_type='application/json',
-    #         data=json.dumps(DM_event_json)
-    #     )
-    #
-    #     # レスポンス結果の再現
-    #     response_body = {"status" : "Get DM"}
-    #     response_body_encode = json.dumps(response_body).encode()
-    #     # レスポンス結果のの照合
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.data, response_body_encode)
+    def test_twitter_DM(self):
+        # DMがきた時のjsonをロード
+        with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
+            DM_event_json = json.load(DM_event_json_file)
+            DM_event_json["direct_message_events"][0]["message_create"]["sender_id"] = os.environ['TEST_ACCOUNT_ID']
+        # twitterからのDMイベントのAPIを再現
+        response = self.app.post(
+            "/webhooks/twitter",
+            content_type='application/json',
+            data=json.dumps(DM_event_json)
+        )
+
+        # レスポンス結果の再現
+        response_body = {"status" : "Get DM"}
+        response_body_encode = json.dumps(response_body).encode()
+        # レスポンス結果のの照合
+        if os.environ['ENV'] == "wercker":
+            print(os.environ['ENV'])
+            self.assertEqual(response.status_code, 500)
+        else:
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data, response_body_encode)
+
+    def test_twitter_follow(self):
+        # followがきた時のjsonをロード
+        with open("test_code/test_json/follow_event.json", "r") as follow_event_json_file:
+            follow_event_json = json.load(follow_event_json_file)
+            follow_event_json["follow_events"][0]["source"]["id"] = os.environ['TEST_ACCOUNT_ID']
+        # twitterからのfollowイベントのAPIを再現
+        response = self.app.post(
+            "/webhooks/twitter",
+            content_type='application/json',
+            data=json.dumps(follow_event_json)
+        )
+
+        # レスポンス結果の再現
+        response_body = {"status" : "Get follow"}
+        response_body_encode = json.dumps(response_body).encode()
+        # レスポンス結果のの照合
+        if os.environ['ENV'] == "wercker":
+            self.assertEqual(response.status_code, 500)
+        else:
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data, response_body_encode)
+
 
     def test_twitter_favorite(self):
         # お気に入りされた時のjsonをロード
