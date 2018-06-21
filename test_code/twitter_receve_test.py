@@ -38,7 +38,8 @@ class TestTwitterReceve(unittest.TestCase):
         response_body = {"status" : "Get DM"}
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
-        if os.environ['ENV'] is "wercker":
+        if os.environ['ENV'] == "wercker":
+            print(os.environ['ENV'])
             self.assertEqual(response.status_code, 500)
         else:
             self.assertEqual(response.status_code, 200)
@@ -60,7 +61,7 @@ class TestTwitterReceve(unittest.TestCase):
         response_body = {"status" : "Get follow"}
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
-        if os.environ['ENV'] is "wercker":
+        if os.environ['ENV'] == "wercker":
             self.assertEqual(response.status_code, 500)
         else:
             self.assertEqual(response.status_code, 200)
