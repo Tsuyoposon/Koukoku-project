@@ -5,7 +5,7 @@
     - 開発スケージュール＆やることリスト
 - [wiki](https://github.com/Tsuyoposon/Koukoku-project/wiki)
     - 開発フロー＆ルールの定義
-- [wercker](https://app.wercker.com/Tsuyoposon/Koukoku-project/options)
+- [wercker](https://app.wercker.com/Tsuyoposon/Koukoku-project/runs)
     - CI環境
 
 ## プロジェクト概要
