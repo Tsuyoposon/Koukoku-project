@@ -42,7 +42,7 @@ def webhook_challenge():
     return json.dumps(response)
 
 
-# DMを受け取った時の処理
+# Twitterからイベントを受け取った時の処理
 @app.route('/webhooks/twitter', methods=['POST'])
 def webhook_catch():
 
