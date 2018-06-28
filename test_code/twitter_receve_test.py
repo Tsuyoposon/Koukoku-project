@@ -1,15 +1,19 @@
 import unittest, os
+from unittest import mock
 # twitter_receve用テストコード
 import receve_api
 from flask import Flask, request
 import json
-
+from watson_developer_cloud import PersonalityInsightsV3
+# mockのimport
+from test_code import twitter_receve_mock
 
 class TestTwitterReceve(unittest.TestCase):
 
     def setUp(self):
         self.app = receve_api.app.test_client()
 
+    # webhookの登録が正常にできるか確認
     def test_webhook_challenge(self):
         # twitterからのリクエストAPIを再現
         response = self.app.get("/webhooks/twitter?crc_token=foo")
@@ -22,7 +26,9 @@ class TestTwitterReceve(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
 
-    def test_twitter_DM(self):
+    # DMが来た時の動作を確認
+    @mock.patch('requests.post', side_effect=twitter_receve_mock.mocked_twitter_API)
+    def test_twitter_DM(self, mock_post):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
@@ -38,14 +44,14 @@ class TestTwitterReceve(unittest.TestCase):
         response_body = {"status" : "Get DM"}
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
-        if os.environ['ENV'] == "wercker":
-            print(os.environ['ENV'])
-            self.assertEqual(response.status_code, 500)
-        else:
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.data, response_body_encode)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, response_body_encode)
 
-    def test_twitter_follow(self):
+    # フォローが来た時の動作を確認
+    @mock.patch('requests.get', side_effect=twitter_receve_mock.mocked_twitter_API)
+    @mock.patch('requests.post', side_effect=twitter_receve_mock.mocked_twitter_API)
+    @mock.patch('watson_developer_cloud.PersonalityInsightsV3.profile', side_effect=twitter_receve_mock.mocked_watson_API)
+    def test_twitter_follow(self, mock_get, mock_post, mock_watson):
         # followがきた時のjsonをロード
         with open("test_code/test_json/follow_event.json", "r") as follow_event_json_file:
             follow_event_json = json.load(follow_event_json_file)
@@ -61,13 +67,10 @@ class TestTwitterReceve(unittest.TestCase):
         response_body = {"status" : "Get follow"}
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
-        if os.environ['ENV'] == "wercker":
-            self.assertEqual(response.status_code, 500)
-        else:
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.data, response_body_encode)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, response_body_encode)
 
-
+    # その他のイベント(お気に入り)が来た時の動作を確認
     def test_twitter_favorite(self):
         # お気に入りされた時のjsonをロード
         with open("test_code/test_json/favorite_events.json", "r") as favorite_event_json_file:
