@@ -1,3 +1,4 @@
+alembic==0.9.10
 asn1crypto==0.24.0
 attrs==18.1.0
 autobahn==18.6.1
@@ -9,6 +10,7 @@ click==6.7
 constantly==15.1.0
 cryptography==2.2.2
 Flask==1.0.2
+Flask-Migrate==2.2.1
 Flask-SQLAlchemy==2.3.2
 future==0.16.0
 gunicorn==19.8.1
@@ -17,6 +19,7 @@ idna==2.6
 incremental==17.5.0
 itsdangerous==0.24
 Jinja2==2.10
+Mako==1.0.7
 MarkupSafe==1.0
 numpy==1.14.3
 oauthlib==2.1.0
@@ -27,6 +30,7 @@ pycparser==2.18
 PyMySQL==0.9.0
 pyOpenSSL==18.0.0
 python-dateutil==2.7.3
+python-editor==1.0.3
 python-twitter==3.4.2
 requests==2.18.4
 requests-oauthlib==1.0.0
