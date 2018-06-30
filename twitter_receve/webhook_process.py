@@ -4,7 +4,9 @@ from watson_developer_cloud import PersonalityInsightsV3
 # API処理用
 from flask import Flask, request
 import json, os, requests
-
+# DB用のモデル
+from twitter_receve.koukokuDB.models import User
+from twitter_receve.koukokuDB.database import db
 
 # DMをもらった時
 def DM_catch(twitter_account_auth, request, respon_json):
@@ -53,7 +55,7 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
         auth=twitter_account_auth,
         params={
             "user_id" : request.json["follow_events"][0]["source"]["id"],
-            "count"   : 1
+            "count"   : 10
         }
     )
 
@@ -69,6 +71,12 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
         accept="application/json",
         content_language="ja"
     )
+
+    # フォローしたユーザの性格情報をいれる
+    user = User(request.json["follow_events"][0]["source"]["id"])
+    db.session.add(user)
+    db.session.commit()
+    
     # 返信を”Get follow”に書き換える
     respon_json["status"] = "Get follow"
     return json.dumps(respon_json)

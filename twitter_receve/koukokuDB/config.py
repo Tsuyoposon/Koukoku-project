@@ -1,7 +1,6 @@
 """FlaskのConfigを提供する"""
 import os
 
-
 class DevelopmentConfig:
     # SQLAlchemy
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{user}:{password}@{host}/koukokuDB?charset=utf8'.format(**{
