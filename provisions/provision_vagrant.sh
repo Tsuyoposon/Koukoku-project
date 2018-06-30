@@ -8,13 +8,6 @@ echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile
 echo 'eval "$(pyenv init -)"' >> ~/.profile
 source ~/.profile
 
-wget https://twistedmatrix.com/Releases/Twisted/18.4/Twisted-18.4.0.tar.bz2
-tar -jxvf Twisted-18.4.0.tar.bz2
-cd Twisted-18.4.0
-python setup.py install
-
-cd ../../koukoku-system
-echo | pwd
 
 echo 'python3.6 install'
 pyenv install 3.6.0
@@ -25,6 +18,14 @@ echo 'pip install'
 wget https://bootstrap.pypa.io/get-pip.py
 python3.6 get-pip.py
 pip -V
+
+wget https://twistedmatrix.com/Releases/Twisted/18.4/Twisted-18.4.0.tar.bz2
+tar -jxvf Twisted-18.4.0.tar.bz2
+cd Twisted-18.4.0
+python setup.py install
+
+cd ../../koukoku-system
+echo | pwd
 
 echo 'install package!!'
 pip install -r requirements.txt

@@ -10,9 +10,13 @@ import twitter
 from watson_developer_cloud import PersonalityInsightsV3
 # webhookイベントの時の処理関数
 from twitter_receve import webhook_process
-
+# DB用import
+import twitter_receve.koukokuDB.models
+from twitter_receve.koukokuDB.database import init_db
 
 app = Flask(__name__)
+app.config.from_object('twitter_receve.koukokuDB.config.Config')
+init_db(app)
 # twitter操作のための認証
 twitter_account_auth = OAuth1(
     os.environ['TWITTER_CONSUMER'],
