@@ -1,6 +1,14 @@
 
 box: python:3.6.0
 
+services:
+  - id: mysql
+    env:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_password
+      MYSQL_DATABASE: test_database
+
 build: # ビルド設定(パッケージ・ライブラリのインストール確認)
   steps:
     # pipのでパッケージインストール
