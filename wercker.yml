@@ -1,14 +1,15 @@
 box: python:3.6.0
 
+services:
+  - id: mysql
+    username: $DOCKER_HUB_ID
+    password: $DOCKER_HUB_PASSWORD
+    tag: latest
+    env:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: koukokuDB
+
 build: # ビルド設定(パッケージ・ライブラリのインストール確認)
-  services:
-    - id: mysql
-      username: $DOCKER_HUB_ID
-      password: $DOCKER_HUB_PASSWORD
-      tag: 5.5.60
-      env:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: koukokuDB
 
   steps:
     # pipのでパッケージインストール
@@ -35,9 +36,7 @@ test-code: # テストコードの実行!
 
     - script:
         name: mysql create table!!
-        code: |
-          FLASK_APP=receve_api.py flask db migrate
-          FLASK_APP=receve_api.py flask db upgrade
+        code: FLASK_APP=receve_api.py flask db upgrade
 
     - script:
       name: twitter_receve!!
