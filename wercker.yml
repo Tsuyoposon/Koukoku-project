@@ -3,6 +3,9 @@ box: python:3.6.0
 build: # ビルド設定(パッケージ・ライブラリのインストール確認)
   services:
     - id: mysql
+      username: $DOCKER_HUB_ID
+      password: $DOCKER_HUB_PASSWORD
+      tag: latest
       env:
         MYSQL_ROOT_PASSWORD: root
         MYSQL_DATABASE: koukokuDB
