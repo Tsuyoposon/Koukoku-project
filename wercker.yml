@@ -5,7 +5,7 @@ build: # ビルド設定(パッケージ・ライブラリのインストール�
     - id: mysql
       username: $DOCKER_HUB_ID
       password: $DOCKER_HUB_PASSWORD
-      tag: 8.0
+      tag: 5.5.60
       env:
         MYSQL_ROOT_PASSWORD: root
         MYSQL_DATABASE: koukokuDB
