@@ -24,6 +24,7 @@ MarkupSafe==1.0
 numpy==1.14.3
 oauthlib==2.1.0
 pipenv==2018.5.18
+psycopg2==2.7.5
 pyasn1==0.4.3
 pyasn1-modules==0.2.1
 pycparser==2.18
