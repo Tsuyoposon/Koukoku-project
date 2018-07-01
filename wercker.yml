@@ -1,14 +1,15 @@
 
 box: python:3.6.0
 
-services:
-  - id: mysql
-    env:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: koukokuDB
-
 
 build: # ビルド設定(パッケージ・ライブラリのインストール確認)
+
+  services:
+    - id: mysql
+      env:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: koukokuDB
+
   steps:
     # pipのでパッケージインストール
     - pip-install:
