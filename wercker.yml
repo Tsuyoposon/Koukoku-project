@@ -1,4 +1,5 @@
 box: python:3.6.0
+
 # 別コンテナにmysqlを作ってもらう
 services:
   - id: mysql
@@ -8,12 +9,12 @@ services:
     env:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: koukokuDB
-# pipのでパッケージインストール
-pip-install:
-  - requirements_file: "requirements.txt"
 
 build: # ビルド設定(パッケージ・ライブラリのインストール確認)
   steps:
+    # pipのでパッケージインストール
+    - pip-install:
+        requirements_file: "requirements.txt"
     - script:
         name: echo python information
         code: |
@@ -22,13 +23,16 @@ build: # ビルド設定(パッケージ・ライブラリのインストール�
     - script:
         name: sample test code!!
         code: python -m unittest discover sample_testcode -v
-
     - script:
         name: mysql create table!!
         code: FLASK_APP=receve_api.py flask db upgrade
 
+
 test-code: # テストコードの実行!
   steps:
+    - pip-install:
+        requirements_file: "requirements.txt"
+
     - script:
         name: mysql create table!!
         code: FLASK_APP=receve_api.py flask db upgrade
