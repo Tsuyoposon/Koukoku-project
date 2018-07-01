@@ -25,12 +25,14 @@ def DM_catch(twitter_account_auth, request, respon_json):
             }
         }
     }
+    print(ああああああ)
     # オウム返しでDMを返す
     requests.post(
         "https://api.twitter.com/1.1/direct_messages/events/new.json",
         auth=twitter_account_auth,
         data=json.dumps(DM_sent_body)
     )
+
     # 返信を”Get DM”に書き換える
     respon_json["status"] = "Get DM"
     return json.dumps(respon_json)
@@ -71,12 +73,12 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
         accept="application/json",
         content_language="ja"
     )
-
+    print(json.dumps(watson_renponse, indent=2))
     # フォローしたユーザの性格情報をいれる
     user = User(request.json["follow_events"][0]["source"]["id"])
     db.session.add(user)
     db.session.commit()
-    
+
     # 返信を”Get follow”に書き換える
     respon_json["status"] = "Get follow"
     return json.dumps(respon_json)
