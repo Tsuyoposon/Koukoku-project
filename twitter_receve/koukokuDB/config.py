@@ -12,7 +12,7 @@ class DevelopmentConfig:
             SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{user}:{password}@{host}/koukokuDB?charset=utf8'.format(**{
                 'user': os.getenv('DB_USER', 'root'),
                 'password': os.getenv('DB_PASSWORD', 'root'),
-                'host': os.environ['MYSQL_PORT'],
+                'host': os.environ['MYSQL_PORT_3306_TCP'],
             })
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
