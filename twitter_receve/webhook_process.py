@@ -25,7 +25,7 @@ def DM_catch(twitter_account_auth, request, respon_json):
             }
         }
     }
-    print(ああああああ)
+    print("aaaaaa")
     # オウム返しでDMを返す
     requests.post(
         "https://api.twitter.com/1.1/direct_messages/events/new.json",
