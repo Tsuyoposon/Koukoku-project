@@ -6,6 +6,7 @@ from flask import Flask, request
 import json, os, requests
 # DB用のモデル
 from twitter_receve.koukokuDB.models import User
+from twitter_receve.koukokuDB.models import UserStatus
 from twitter_receve.koukokuDB.database import db
 
 # DMをもらった時
