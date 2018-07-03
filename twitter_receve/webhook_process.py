@@ -25,7 +25,6 @@ def DM_catch(twitter_account_auth, request, respon_json):
             }
         }
     }
-    print("aaaaaa")
     # オウム返しでDMを返す
     requests.post(
         "https://api.twitter.com/1.1/direct_messages/events/new.json",
@@ -73,7 +72,7 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
         accept="application/json",
         content_language="ja"
     )
-    print(json.dumps(watson_renponse, indent=2))
+
     # フォローしたユーザの性格情報をいれる
     user = User(request.json["follow_events"][0]["source"]["id"])
     db.session.add(user)
