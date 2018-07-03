@@ -6,7 +6,7 @@ class UserStatus(db.Model):
     __tablename__ = 'user_statuses'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, nullable=False)
 
     info_1 = db.Column(db.Boolean, nullable=False)
     info_2 = db.Column(db.Boolean, nullable=False)
