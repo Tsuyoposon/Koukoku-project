@@ -7,11 +7,23 @@ import json
 from watson_developer_cloud import PersonalityInsightsV3
 # mockのimport
 from test_code.twitter_test import receve_mock
+from twitter_receve.koukokuDB.database import reset_db, init_db
 
 class TestTwitterReceve(unittest.TestCase):
 
+    # test_receve実行前に1度だけ
+    @classmethod
+    def setUpClass(self):
+        app = Flask(__name__)
+        app.config.from_object('twitter_receve.koukokuDB.config.Config')
+        init_db(app)
+        reset_db(app)
+        print('DB reset!!')
+
+    # test_receve内関数を実行ごとに
     def setUp(self):
         self.app = receve_api.app.test_client()
+
 
     # webhookの登録が正常にできるか確認
     def test_webhook_challenge(self):
