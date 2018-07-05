@@ -7,3 +7,9 @@ db = SQLAlchemy()
 def init_db(app):
     db.init_app(app)
     Migrate(app, db)
+
+def reset_db(app):
+    with app.app_context():
+        db.drop_all()
+    with app.app_context():
+        db.create_all()

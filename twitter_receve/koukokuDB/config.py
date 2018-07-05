@@ -18,6 +18,7 @@ class DevelopmentConfig:
             'password': os.getenv('DB_PASSWORD', 'root'),
             'host': os.getenv('DB_HOST', 'localhost'),
         })
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
 

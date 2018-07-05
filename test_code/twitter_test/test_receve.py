@@ -6,12 +6,26 @@ from flask import Flask, request
 import json
 from watson_developer_cloud import PersonalityInsightsV3
 # mockのimport
-from test_code import twitter_receve_mock
+from test_code.twitter_test import receve_mock
+# DB用のimport
+from twitter_receve.koukokuDB.database import reset_db, init_db, db
+from twitter_receve.koukokuDB.models import User
+from twitter_receve.koukokuDB.database import db
+
 
 class TestTwitterReceve(unittest.TestCase):
-
+    # test_receve実行前に1度だけ
+    @classmethod
+    def setUpClass(self):
+        app = Flask(__name__)
+        app.config.from_object('twitter_receve.koukokuDB.config.Config')
+        init_db(app)
+        reset_db(app)
+        print('DB reset!!')
+    # test_receve内関数を実行ごとに
     def setUp(self):
         self.app = receve_api.app.test_client()
+
 
     # webhookの登録が正常にできるか確認
     def test_webhook_challenge(self):
@@ -27,7 +41,7 @@ class TestTwitterReceve(unittest.TestCase):
         self.assertEqual(response.data, response_body_encode)
 
     # DMが来た時の動作を確認
-    @mock.patch('requests.post', side_effect=twitter_receve_mock.mocked_twitter_API)
+    @mock.patch('requests.post', side_effect=receve_mock.mocked_twitter_API)
     def test_twitter_DM(self, mock_post):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
@@ -48,9 +62,9 @@ class TestTwitterReceve(unittest.TestCase):
         self.assertEqual(response.data, response_body_encode)
 
     # フォローが来た時の動作を確認
-    @mock.patch('requests.get', side_effect=twitter_receve_mock.mocked_twitter_API)
-    @mock.patch('requests.post', side_effect=twitter_receve_mock.mocked_twitter_API)
-    @mock.patch('watson_developer_cloud.PersonalityInsightsV3.profile', side_effect=twitter_receve_mock.mocked_watson_API)
+    @mock.patch('requests.get', side_effect=receve_mock.mocked_twitter_API)
+    @mock.patch('requests.post', side_effect=receve_mock.mocked_twitter_API)
+    @mock.patch('watson_developer_cloud.PersonalityInsightsV3.profile', side_effect=receve_mock.mocked_watson_API)
     def test_twitter_follow(self, mock_get, mock_post, mock_watson):
         # followがきた時のjsonをロード
         with open("test_code/test_json/follow_event.json", "r") as follow_event_json_file:
@@ -69,6 +83,16 @@ class TestTwitterReceve(unittest.TestCase):
         # レスポンス結果のの照合
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
+        
+        app = Flask(__name__)
+        app.config.from_object('twitter_receve.koukokuDB.config.Config')
+        init_db(app)
+        # DB挿入結果の照会
+        with app.app_context():
+            user = User.query.get(1)
+        self.assertEqual(user.twitter_userid, os.environ['TEST_ACCOUNT_ID'])
+
+
 
     # その他のイベント(お気に入り)が来た時の動作を確認
     def test_twitter_favorite(self):
@@ -88,6 +112,8 @@ class TestTwitterReceve(unittest.TestCase):
         # レスポンス結果のの照合
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
+
+
 
 if __name__ == '__main__':
     unittest.main()

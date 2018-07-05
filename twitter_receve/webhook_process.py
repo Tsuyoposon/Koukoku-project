@@ -6,6 +6,7 @@ from flask import Flask, request
 import json, os, requests
 # DB用のモデル
 from twitter_receve.koukokuDB.models import User
+from twitter_receve.koukokuDB.models import UserStatus
 from twitter_receve.koukokuDB.database import db
 
 # DMをもらった時
@@ -72,9 +73,62 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
         accept="application/json",
         content_language="ja"
     )
-
     # フォローしたユーザの性格情報をいれる
-    user = User(request.json["follow_events"][0]["source"]["id"])
+    user = User(
+            request.json["follow_events"][0]["source"]["id"],
+            watson_renponse["personality"][0]["percentile"],
+            watson_renponse["personality"][0]["children"][0]["percentile"],
+            watson_renponse["personality"][0]["children"][1]["percentile"],
+            watson_renponse["personality"][0]["children"][2]["percentile"],
+            watson_renponse["personality"][0]["children"][3]["percentile"],
+            watson_renponse["personality"][0]["children"][4]["percentile"],
+            watson_renponse["personality"][0]["children"][5]["percentile"],
+            watson_renponse["personality"][1]["percentile"],
+            watson_renponse["personality"][1]["children"][0]["percentile"],
+            watson_renponse["personality"][1]["children"][1]["percentile"],
+            watson_renponse["personality"][1]["children"][2]["percentile"],
+            watson_renponse["personality"][1]["children"][3]["percentile"],
+            watson_renponse["personality"][1]["children"][4]["percentile"],
+            watson_renponse["personality"][1]["children"][5]["percentile"],
+            watson_renponse["personality"][2]["percentile"],
+            watson_renponse["personality"][2]["children"][0]["percentile"],
+            watson_renponse["personality"][2]["children"][1]["percentile"],
+            watson_renponse["personality"][2]["children"][2]["percentile"],
+            watson_renponse["personality"][2]["children"][3]["percentile"],
+            watson_renponse["personality"][2]["children"][4]["percentile"],
+            watson_renponse["personality"][2]["children"][5]["percentile"],
+            watson_renponse["personality"][3]["percentile"],
+            watson_renponse["personality"][3]["children"][0]["percentile"],
+            watson_renponse["personality"][3]["children"][1]["percentile"],
+            watson_renponse["personality"][3]["children"][2]["percentile"],
+            watson_renponse["personality"][3]["children"][3]["percentile"],
+            watson_renponse["personality"][3]["children"][4]["percentile"],
+            watson_renponse["personality"][3]["children"][5]["percentile"],
+            watson_renponse["personality"][4]["percentile"],
+            watson_renponse["personality"][4]["children"][0]["percentile"],
+            watson_renponse["personality"][4]["children"][1]["percentile"],
+            watson_renponse["personality"][4]["children"][2]["percentile"],
+            watson_renponse["personality"][4]["children"][3]["percentile"],
+            watson_renponse["personality"][4]["children"][4]["percentile"],
+            watson_renponse["personality"][4]["children"][5]["percentile"],
+            watson_renponse["needs"][0]["percentile"],
+            watson_renponse["needs"][1]["percentile"],
+            watson_renponse["needs"][2]["percentile"],
+            watson_renponse["needs"][3]["percentile"],
+            watson_renponse["needs"][4]["percentile"],
+            watson_renponse["needs"][5]["percentile"],
+            watson_renponse["needs"][6]["percentile"],
+            watson_renponse["needs"][7]["percentile"],
+            watson_renponse["needs"][8]["percentile"],
+            watson_renponse["needs"][9]["percentile"],
+            watson_renponse["needs"][10]["percentile"],
+            watson_renponse["needs"][11]["percentile"],
+            watson_renponse["values"][0]["percentile"],
+            watson_renponse["values"][1]["percentile"],
+            watson_renponse["values"][2]["percentile"],
+            watson_renponse["values"][3]["percentile"],
+            watson_renponse["values"][4]["percentile"]
+        )
     db.session.add(user)
     db.session.commit()
 
