@@ -6,7 +6,7 @@ from flask import Flask, request
 import json
 from watson_developer_cloud import PersonalityInsightsV3
 # mockのimport
-from test_code import twitter_receve_mock
+from test_code.twitter_test import receve_mock
 
 class TestTwitterReceve(unittest.TestCase):
 
@@ -27,7 +27,7 @@ class TestTwitterReceve(unittest.TestCase):
         self.assertEqual(response.data, response_body_encode)
 
     # DMが来た時の動作を確認
-    @mock.patch('requests.post', side_effect=twitter_receve_mock.mocked_twitter_API)
+    @mock.patch('requests.post', side_effect=receve_mock.mocked_twitter_API)
     def test_twitter_DM(self, mock_post):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
@@ -48,9 +48,9 @@ class TestTwitterReceve(unittest.TestCase):
         self.assertEqual(response.data, response_body_encode)
 
     # フォローが来た時の動作を確認
-    @mock.patch('requests.get', side_effect=twitter_receve_mock.mocked_twitter_API)
-    @mock.patch('requests.post', side_effect=twitter_receve_mock.mocked_twitter_API)
-    @mock.patch('watson_developer_cloud.PersonalityInsightsV3.profile', side_effect=twitter_receve_mock.mocked_watson_API)
+    @mock.patch('requests.get', side_effect=receve_mock.mocked_twitter_API)
+    @mock.patch('requests.post', side_effect=receve_mock.mocked_twitter_API)
+    @mock.patch('watson_developer_cloud.PersonalityInsightsV3.profile', side_effect=receve_mock.mocked_watson_API)
     def test_twitter_follow(self, mock_get, mock_post, mock_watson):
         # followがきた時のjsonをロード
         with open("test_code/test_json/follow_event.json", "r") as follow_event_json_file:
