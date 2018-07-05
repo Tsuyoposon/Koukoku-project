@@ -7,10 +7,13 @@ import json
 from watson_developer_cloud import PersonalityInsightsV3
 # mockのimport
 from test_code.twitter_test import receve_mock
-from twitter_receve.koukokuDB.database import reset_db, init_db
+# DB用のimport
+from twitter_receve.koukokuDB.database import reset_db, init_db, db
+from twitter_receve.koukokuDB.models import User
+from twitter_receve.koukokuDB.database import db
+
 
 class TestTwitterReceve(unittest.TestCase):
-
     # test_receve実行前に1度だけ
     @classmethod
     def setUpClass(self):
@@ -19,7 +22,6 @@ class TestTwitterReceve(unittest.TestCase):
         init_db(app)
         reset_db(app)
         print('DB reset!!')
-
     # test_receve内関数を実行ごとに
     def setUp(self):
         self.app = receve_api.app.test_client()
@@ -81,6 +83,16 @@ class TestTwitterReceve(unittest.TestCase):
         # レスポンス結果のの照合
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
+        
+        app = Flask(__name__)
+        app.config.from_object('twitter_receve.koukokuDB.config.Config')
+        init_db(app)
+        # DB挿入結果の照会
+        with app.app_context():
+            user = User.query.get(1)
+        self.assertEqual(user.twitter_userid, os.environ['TEST_ACCOUNT_ID'])
+
+
 
     # その他のイベント(お気に入り)が来た時の動作を確認
     def test_twitter_favorite(self):
@@ -100,6 +112,8 @@ class TestTwitterReceve(unittest.TestCase):
         # レスポンス結果のの照合
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
+
+
 
 if __name__ == '__main__':
     unittest.main()
