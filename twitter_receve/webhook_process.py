@@ -41,40 +41,46 @@ def DM_catch(twitter_account_auth, request, respon_json):
 # フォローされた時
 def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json):
 
-    # フォロー返しをする
-    requests.post(
-        "https://api.twitter.com/1.1/friendships/create.json",
-        auth=twitter_account_auth,
-        params={
-            "user_id" : request.json["follow_events"][0]["source"]["id"],
-            "follow"  : "true"
-        }
-    )
+    if request.json["follow_events"][0]["target"]["following"] == False:
+        # もし相手をフォローしていなかったらフォロー返しをする
+        requests.post(
+            "https://api.twitter.com/1.1/friendships/create.json",
+            auth=twitter_account_auth,
+            params={
+                "user_id" : request.json["follow_events"][0]["source"]["id"],
+                "follow"  : "true"
+            }
+        )
+        print(json.dumps(request.json, indent=2))
 
-    # 相手のツイート10件を取得
-    DM_user_timeline = requests.get(
-        "https://api.twitter.com/1.1/statuses/user_timeline.json",
-        auth=twitter_account_auth,
-        params={
-            "user_id" : request.json["follow_events"][0]["source"]["id"],
-            "count"   : 10
-        }
-    )
 
-    # timelineの文章
-    DM_user_linked_timeline = ""
-    for DM_user_tweet in DM_user_timeline.json():
-        DM_user_linked_timeline += DM_user_tweet["text"]
+    # DB内に登録しようとしているユーザが既にいるのか確認する
+    check_user = User.query.filter_by(twitter_userid=request.json["follow_events"][0]["source"]["id"]).first()
+    if check_user is None:
+        # 相手のツイート10件を取得
+        DM_user_timeline = requests.get(
+            "https://api.twitter.com/1.1/statuses/user_timeline.json",
+            auth=twitter_account_auth,
+            params={
+                "user_id" : request.json["follow_events"][0]["source"]["id"],
+                "count"   : 10
+                }
+            )
 
-    # watsonにテキストを送る
-    watson_renponse = watson_personal_API.profile(
-        DM_user_linked_timeline,
-        content_type="text/plain",
-        accept="application/json",
-        content_language="ja"
-    )
-    # フォローしたユーザの性格情報をいれる
-    user = User(
+        # timelineの文章
+        DM_user_linked_timeline = ""
+        for DM_user_tweet in DM_user_timeline.json():
+            DM_user_linked_timeline += DM_user_tweet["text"]
+
+        # watsonにテキストを送る
+        watson_renponse = watson_personal_API.profile(
+            DM_user_linked_timeline,
+            content_type="text/plain",
+            accept="application/json",
+            content_language="ja"
+        )
+        # フォローしたユーザの性格情報をいれる
+        user = User(
             request.json["follow_events"][0]["source"]["id"],
             watson_renponse["personality"][0]["percentile"],
             watson_renponse["personality"][0]["children"][0]["percentile"],
@@ -129,9 +135,14 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
             watson_renponse["values"][3]["percentile"],
             watson_renponse["values"][4]["percentile"]
         )
-    db.session.add(user)
-    db.session.commit()
-
-    # 返信を”Get follow”に書き換える
-    respon_json["status"] = "Get follow"
-    return json.dumps(respon_json)
+        db.session.add(user)
+        db.session.commit()
+        # ”ユーザ情報をDBに書き込んだ”という返信
+        respon_json["status"] = "Get follow:New user"
+        print(json.dumps(respon_json, indent=2))
+        return json.dumps(respon_json)
+    else:
+        # ”ユーザ情報を書き込んでいない”という返信
+        respon_json["status"] = "Get follow:NO write"
+        print(json.dumps(respon_json, indent=2))
+        return json.dumps(respon_json)
