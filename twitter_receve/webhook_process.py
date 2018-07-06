@@ -32,7 +32,7 @@ def DM_catch(twitter_account_auth, request, respon_json):
         auth=twitter_account_auth,
         data=json.dumps(DM_sent_body)
     )
-
+    print(json.dumps(request.json, indent=2))
     # 返信を”Get DM”に書き換える
     respon_json["status"] = "Get DM"
     return json.dumps(respon_json)
@@ -139,10 +139,8 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
         db.session.commit()
         # ”ユーザ情報をDBに書き込んだ”という返信
         respon_json["status"] = "Get follow:New user"
-        print(json.dumps(respon_json, indent=2))
         return json.dumps(respon_json)
     else:
         # ”ユーザ情報を書き込んでいない”という返信
         respon_json["status"] = "Get follow:NO write"
-        print(json.dumps(respon_json, indent=2))
         return json.dumps(respon_json)
