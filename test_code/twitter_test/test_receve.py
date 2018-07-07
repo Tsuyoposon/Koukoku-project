@@ -100,7 +100,7 @@ class TestTwitterReceve(unittest.TestCase):
             user = User.query.get(1)
         self.assertEqual(user.twitter_userid, os.environ['TEST_ACCOUNT_ID'])
     # フォローが来た時(既にフォローしている)の動作を確認
-    @mock.patch('requests.get', side_effect=receve_mock.mocked_twitter_API)
+    @mock.patch('requests.get', side_effect=receve_mock.mocked_twitter_API_2)
     @mock.patch('requests.post', side_effect=receve_mock.mocked_twitter_API)
     @mock.patch('watson_developer_cloud.PersonalityInsightsV3.profile', side_effect=receve_mock.mocked_watson_API)
     def test_twitter_follow_2(self, mock_get, mock_post, mock_watson):
@@ -119,7 +119,7 @@ class TestTwitterReceve(unittest.TestCase):
         response_body = {
             "status" : "Get follow",
             "New User" : "NO",
-            "Follow" : "OK"
+            "Follow" : "NO"
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
