@@ -51,8 +51,11 @@ def webhook_challenge():
 def webhook_catch():
 
     # 返信用json
-    respon_json = {"status" : "OK"}
-
+    respon_json = {
+        "status"   : "OK",
+        "New User" : "",
+        "Follow"   : ""
+    }
     # webhookイベントがユーザにフォローされた時の処理
     if request.json.get("follow_events"):
         return webhook_process.follow_catch(twitter_account_auth, watson_personal_API, request, respon_json)

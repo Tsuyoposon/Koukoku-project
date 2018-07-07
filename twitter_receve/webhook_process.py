@@ -41,6 +41,7 @@ def DM_catch(twitter_account_auth, request, respon_json):
 # フォローされた時
 def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json):
 
+    # 自分が相手をフォローしているか確認する
     friendships_result = requests.get(
         "https://api.twitter.com/1.1/friendships/lookup.json",
         auth=twitter_account_auth,
@@ -48,7 +49,6 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
             "user_id" : request.json["follow_events"][0]["source"]["id"],
         }
     )
-
     if "following" not in friendships_result.json()[0]["connections"]:
         # もし相手をフォローしていなかったらフォロー返しをする
         requests.post(
@@ -59,6 +59,9 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
                 "follow"  : "true"
             }
         )
+        respon_json["Follow"] = "OK"
+    else:
+        respon_json["Follow"] = "NO"
 
     # DB内に登録しようとしているユーザが既にいるのか確認する
     check_user = User.query.filter_by(twitter_userid=request.json["follow_events"][0]["source"]["id"]).first()
@@ -144,9 +147,11 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
         db.session.add(user)
         db.session.commit()
         # ”ユーザ情報をDBに書き込んだ”という返信
-        respon_json["status"] = "Get follow:New user"
+        respon_json["New User"] = "OK"
+        respon_json["status"] = "Get follow"
         return json.dumps(respon_json)
     else:
         # ”ユーザ情報を書き込んでいない”という返信
-        respon_json["status"] = "Get follow:NO write"
+        respon_json["New User"] = "NO"
+        respon_json["status"] = "Get follow"
         return json.dumps(respon_json)

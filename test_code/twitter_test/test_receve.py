@@ -55,7 +55,11 @@ class TestTwitterReceve(unittest.TestCase):
         )
 
         # レスポンス結果の再現
-        response_body = {"status" : "Get DM"}
+        response_body = {
+            "status" : "Get DM",
+            "New User" : "",
+            "Follow" : ""
+        }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
         self.assertEqual(response.status_code, 200)
@@ -78,7 +82,11 @@ class TestTwitterReceve(unittest.TestCase):
         )
 
         # レスポンス結果の再現
-        response_body = {"status" : "Get follow:New user"}
+        response_body = {
+            "status" : "Get follow",
+            "New User" : "OK",
+            "Follow" : "OK"
+        }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
         self.assertEqual(response.status_code, 200)
@@ -100,7 +108,6 @@ class TestTwitterReceve(unittest.TestCase):
         with open("test_code/test_json/follow_event.json", "r") as follow_event_json_file:
             follow_event_json = json.load(follow_event_json_file)
             follow_event_json["follow_events"][0]["source"]["id"] = os.environ['TEST_ACCOUNT_ID']
-            follow_event_json["follow_events"][0]["target"]["following"] = True
         # twitterからのfollowイベントのAPIを再現
         response = self.app.post(
             "/webhooks/twitter",
@@ -109,7 +116,11 @@ class TestTwitterReceve(unittest.TestCase):
         )
 
         # レスポンス結果の再現
-        response_body = {"status" : "Get follow:NO write"}
+        response_body = {
+            "status" : "Get follow",
+            "New User" : "NO",
+            "Follow" : "OK"
+        }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
         self.assertEqual(response.status_code, 200)
@@ -136,7 +147,11 @@ class TestTwitterReceve(unittest.TestCase):
         )
 
         # レスポンス結果の再現
-        response_body = {"status" : "OK"}
+        response_body = {
+            "status" : "OK",
+            "New User" : "",
+            "Follow" : ""
+        }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
         self.assertEqual(response.status_code, 200)
