@@ -56,7 +56,7 @@ class TestTwitterReceve(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "status" : "Get DM",
+            "status" : "Return DM",
             "New User" : "",
             "Follow" : ""
         }

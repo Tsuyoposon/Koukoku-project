@@ -12,30 +12,35 @@ from twitter_receve.koukokuDB.database import db
 # DMをもらった時
 def DM_catch(twitter_account_auth, request, respon_json):
 
-    # DM返信用のjsonを作成
-    DM_sent_body = {
-        "event": {
-            "type": "message_create",
-            "message_create": {
-                "target": {
-                    "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
-                },
-                "message_data": {
-                    "text": request.json["direct_message_events"][0]["message_create"]["message_data"]["text"]
+    if request.json["direct_message_events"][0]["message_create"]["sender_id"] != os.environ['MYTWITTER_ACCOUNT_ID']:
+        # DM返信用のjsonを作成
+        DM_sent_body = {
+            "event": {
+                "type": "message_create",
+                "message_create": {
+                    "target": {
+                        "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
+                    },
+                    "message_data": {
+                        "text": request.json["direct_message_events"][0]["message_create"]["message_data"]["text"]
+                    }
                 }
             }
         }
-    }
-    # オウム返しでDMを返す
-    requests.post(
-        "https://api.twitter.com/1.1/direct_messages/events/new.json",
-        auth=twitter_account_auth,
-        data=json.dumps(DM_sent_body)
-    )
+        # オウム返しでDMを返す
+        requests.post(
+            "https://api.twitter.com/1.1/direct_messages/events/new.json",
+            auth=twitter_account_auth,
+            data=json.dumps(DM_sent_body)
+        )
 
-    # 返信を”Get DM”に書き換える
-    respon_json["status"] = "Get DM"
-    return json.dumps(respon_json)
+        # 返信を”Get DM”に書き換える
+        respon_json["status"] = "Return DM"
+        return json.dumps(respon_json)
+    else:
+        # 返信を”Get DM”に書き換える
+        respon_json["status"] = "Get DM"
+        return json.dumps(respon_json)
 
 
 # フォローされた時
