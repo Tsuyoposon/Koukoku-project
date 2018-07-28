@@ -11,7 +11,7 @@ from twitter_receve.koukokuDB.database import db
 
 # DMをもらった時
 def DM_catch(twitter_account_auth, request, respon_json):
-    print(json.dumps(request.json, indent=2))
+    # print(json.dumps(request.json, indent=2))
     if request.json["direct_message_events"][0]["message_create"]["sender_id"] != os.environ['MYTWITTER_ACCOUNT_ID']:
         # DM返信用のjsonを作成
         DM_sent_body = {
@@ -46,6 +46,7 @@ def DM_catch(twitter_account_auth, request, respon_json):
 # フォローされた時
 def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json):
 
+    print(json.dumps(request.json, indent=2))
     # 自分が相手をフォローしているか確認する
     friendships_result = requests.get(
         "https://api.twitter.com/1.1/friendships/lookup.json",
@@ -54,6 +55,7 @@ def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json
             "user_id" : request.json["follow_events"][0]["source"]["id"],
         }
     )
+    print(json.dumps(friendships_result.json(), indent=2))
     if "following" not in friendships_result.json()[0]["connections"]:
         # もし相手をフォローしていなかったらフォロー返しをする
         requests.post(
