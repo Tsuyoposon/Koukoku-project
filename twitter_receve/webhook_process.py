@@ -11,7 +11,7 @@ from twitter_receve.koukokuDB.database import db
 
 # DMをもらった時
 def DM_catch(twitter_account_auth, request, respon_json):
-    print(json.dumps(request.json(), indent=2))
+    print(json.dumps(request.json, indent=2))
     if request.json["direct_message_events"][0]["message_create"]["sender_id"] != os.environ['MYTWITTER_ACCOUNT_ID']:
         # DM返信用のjsonを作成
         DM_sent_body = {
