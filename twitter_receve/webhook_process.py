@@ -8,31 +8,71 @@ import json, os, requests
 from twitter_receve.koukokuDB.models import User
 from twitter_receve.koukokuDB.models import UserStatus
 from twitter_receve.koukokuDB.database import db
+# sagemakerの推薦モデルを利用
+import boto3
 
 # DMをもらった時
 def DM_catch(twitter_account_auth, request, respon_json):
     # print(json.dumps(request.json, indent=2))
     if request.json["direct_message_events"][0]["message_create"]["sender_id"] != os.environ['MYTWITTER_ACCOUNT_ID']:
-        # DM返信用のjsonを作成
-        DM_sent_body = {
-            "event": {
-                "type": "message_create",
-                "message_create": {
-                    "target": {
-                        "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
-                    },
-                    "message_data": {
-                        "text": request.json["direct_message_events"][0]["message_create"]["message_data"]["text"]
+
+        # 推薦処理
+        # DMを送ったユーザの情報を取得
+        user = db.session.query(User).filter_by(
+            twitter_userid=request.json["direct_message_events"][0]["message_create"]["sender_id"]
+            ).first()
+        user_byte_data = user.all_params()
+        # boto3でsagemakerのクライアントを作成
+        client = boto3.client('sagemaker-runtime')
+        boto3_response = client.invoke_endpoint(
+            EndpointName='koukoku-recommen-endpoint',
+            Body=user_byte_data.encode(),
+            ContentType='text/csv',
+            Accept='application/json'
+        )
+        # 推薦結果をソート
+        boto3_response_json = json.load(boto3_response['Body'])
+        recommen_result_json = boto3_response_json['result']['classifications'][0]['classes']
+        recommen_sort_result = sorted(recommen_result_json, key=lambda x:x['score'], reverse=True)
+        # DMで上位5件を表示
+        recommen_item_list = [
+            "1-A02 ProtoHole: 穴と音響センシングを用いたインタラクティブな３Dプリントオブジェクトの提案",
+            "1-A03 視覚的でインタラクティブな分類器の構築手法",
+            "1-A04 ニオイセンサーによるニオイの可視化と官能試験との相関性",
+            "1-A05 プレゼンテーションにおける実空間とオンライン空間の聴衆コンテクストの融合",
+            "1-A06 VRショールームのためのVR酔いを抑えた歩行移動インタフェース",
+            "1-A07 スマートウォッチを用いたモノづくりの動作検出に対する試み",
+            "1-A08 睡眠時間の副次利用によるエンタテインメント価値創出",
+            "1-A09 腰背部へのせん断力提示による歩行誘導に関する一検討",
+            "1-A10 ユーザ周囲の多種多様な情報機器を「サービス化」するLBSインタラクション",
+            "1-A15 実世界人形遊びを拡張する仮想ドールハウス",
+            "1-A16 透紙: 紙媒体の質感を拡張する表現手法の提案",
+            "1-A17 Pulse shot:心拍情報を用いた写真撮影システムおよび検索システム",
+            "1-A19 AmbientLetter：わからないスペルをこっそり知るための筆記検出および文字提示手法",
+            "1-A20 ポーチの型紙製作支援システム",
+            "1-A21 宿泊者のホテル内での動きの偏りに関して",
+            "1-A22 パッチワーク風キルト作成支援システム",
+            "1-A23 女性のためのシチュエーションドラマを利用した癒しシステム"
+        ]
+        for i in range(5):
+            DM_sent_body = {
+                "event": {
+                    "type": "message_create",
+                    "message_create": {
+                        "target": {
+                            "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
+                        },
+                        "message_data": {
+                            "text": recommen_item_list[int(recommen_sort_result[i]['label'])]
+                        }
                     }
                 }
             }
-        }
-        # オウム返しでDMを返す
-        requests.post(
-            "https://api.twitter.com/1.1/direct_messages/events/new.json",
-            auth=twitter_account_auth,
-            data=json.dumps(DM_sent_body)
-        )
+            requests.post(
+                "https://api.twitter.com/1.1/direct_messages/events/new.json",
+                auth=twitter_account_auth,
+                data=json.dumps(DM_sent_body)
+            )
 
         # 返信を”Get DM”に書き換える
         respon_json["status"] = "Return DM"
