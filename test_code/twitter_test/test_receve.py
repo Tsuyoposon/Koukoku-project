@@ -33,7 +33,7 @@ class TestTwitterReceve(unittest.TestCase):
         # twitterからのリクエストAPIを再現
         response = self.app.get("/webhooks/twitter?crc_token=foo")
         # レスポンス結果の再現
-        if os.environ['ACCESS_TOKEN_SECRET'] == "wercker":
+        if os.environ['ENV'] == "wercker":
             response_body = {
                 "response_token": "sha256=D1UXbLq0ougTycgcBn9pWDTS2jarXz/3wS5yVJniPFY="
             }
