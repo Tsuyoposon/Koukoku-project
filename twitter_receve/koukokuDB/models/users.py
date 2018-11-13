@@ -144,3 +144,14 @@ class User(db.Model):
 
     def __repr__(self):
         return '<TwitterUserID %r>' % self.twitter_userid
+
+    def all_params(self):
+        all_params_string = f'{self.openness},{self.adventurousness},{self.artistic_interests},{self.emotionality},{self.imagination},{self.intellect},{self.liberalism},' + \
+            f'{self.conscientiousness},{self.achievement_striving},{self.cautiousness},{self.dutifulness},{self.orderliness},{self.self_discipline},{self.self_efficacy},' + \
+            f'{self.extraversion},{self.activity_level},{self.assertiveness},{self.cheerfulness},{self.excitement_seeking},{self.friendliness},{self.gregariousness},' + \
+            f'{self.agreeableness},{self.altruism},{self.cooperation},{self.modesty},{self.morality},{self.sympathy},{self.trust},' + \
+            f'{self.emotional_range},{self.anger},{self.anxiety},{self.depression},{self.immoderation},{self.self_consciousness},{self.vulnerability},' + \
+            f'{self.need_challenge},{self.need_closeness},{self.need_curiosity},{self.need_excitement},{self.need_harmony},{self.need_ideal},{self.need_liberty},' + \
+            f'{self.need_love},{self.need_practicality},{self.need_self_expression},{self.need_stability},{self.need_structure},' + \
+            f'{self.value_conservation},{self.value_openness_to_change},{self.value_hedonism},{self.value_self_enhancement},{self.value_self_transcendence}'
+        return all_params_string

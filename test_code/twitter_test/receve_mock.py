@@ -1,5 +1,6 @@
 from unittest import mock
 import json, os
+from io import StringIO
 
 # twitterAPIの動作を再現
 def mocked_twitter_API(*args, **kwargs):
@@ -86,3 +87,14 @@ def mocked_watson_API(*args, **kwargs):
             watson_result_json = json.load(watson_result_json_file)
         return watson_result_json
     return MockResponse({}, 500)
+# 推薦エンドポイントの動作を再現
+def boto3_client(*args, **kwargs):
+    class MockClient:
+        def invoke_endpoint(*args, **kwargs):
+            with open("test_code/test_json/boto3_client.json", "r") as boto3_client_json_file:
+                boto3_client_Body_json = boto3_client_json_file.read()
+            boto3_client_json = { "Body" : StringIO(boto3_client_Body_json) }
+            return boto3_client_json
+    if args[0] == "sagemaker-runtime":
+        return MockClient
+    return None
