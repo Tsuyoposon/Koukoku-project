@@ -33,9 +33,14 @@ class TestTwitterReceve(unittest.TestCase):
         # twitterからのリクエストAPIを再現
         response = self.app.get("/webhooks/twitter?crc_token=foo")
         # レスポンス結果の再現
-        response_body = {
-            "response_token": "sha256=jT6F6QmWjlqEuBvcEH96KZyhlRuQKjypYClETaAnl48="
-        }
+        if os.environ['ACCESS_TOKEN_SECRET'] == "wercker":
+            response_body = {
+                "response_token": "sha256=D1UXbLq0ougTycgcBn9pWDTS2jarXz/3wS5yVJniPFY="
+            }
+        else:
+            response_body = {
+                "response_token": "sha256=jT6F6QmWjlqEuBvcEH96KZyhlRuQKjypYClETaAnl48="
+            }
         response_body_encode = json.dumps(response_body).encode()
 
         self.assertEqual(response.status_code, 200)
