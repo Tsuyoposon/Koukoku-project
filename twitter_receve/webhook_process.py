@@ -10,6 +10,8 @@ from twitter_receve.koukokuDB.models import UserStatus
 from twitter_receve.koukokuDB.database import db
 # sagemakerの推薦モデルを利用
 import boto3
+# 乱数生成
+import random
 
 # DMをもらった時
 def DM_catch(twitter_account_auth, request, respon_json):
@@ -34,7 +36,7 @@ def DM_catch(twitter_account_auth, request, respon_json):
         boto3_response_json = json.load(boto3_response['Body'])
         recommen_result_json = boto3_response_json['result']['classifications'][0]['classes']
         recommen_sort_result = sorted(recommen_result_json, key=lambda x:x['score'], reverse=True)
-        # DMで上位5件を表示
+        # 推薦結果上位5件を表示
         recommen_item_list = [
             "1-A02 ProtoHole: 穴と音響センシングを用いたインタラクティブな３Dプリントオブジェクトの提案",
             "1-A03 視覚的でインタラクティブな分類器の構築手法",
@@ -54,25 +56,33 @@ def DM_catch(twitter_account_auth, request, respon_json):
             "1-A22 パッチワーク風キルト作成支援システム",
             "1-A23 女性のためのシチュエーションドラマを利用した癒しシステム"
         ]
+        # ランダムに文字を変える(twitterエラー回避用)
+        if random.randint(0, 1) == 1:
+            recommen_sent_string = ""
+        else:
+            recommen_sent_string = "「推薦結果」\n"
         for i in range(5):
-            DM_sent_body = {
-                "event": {
-                    "type": "message_create",
-                    "message_create": {
-                        "target": {
-                            "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
-                        },
-                        "message_data": {
-                            "text": recommen_item_list[int(recommen_sort_result[i]['label'])]
-                        }
+            recommen_sent_string += recommen_item_list[int(recommen_sort_result[i]['label'])] + "\n"
+
+        # 上位5件をDMで送信
+        DM_sent_body = {
+            "event": {
+                "type": "message_create",
+                "message_create": {
+                    "target": {
+                        "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
+                    },
+                    "message_data": {
+                        "text": recommen_sent_string
                     }
                 }
             }
-            requests.post(
-                "https://api.twitter.com/1.1/direct_messages/events/new.json",
-                auth=twitter_account_auth,
-                data=json.dumps(DM_sent_body)
-            )
+        }
+        requests.post(
+            "https://api.twitter.com/1.1/direct_messages/events/new.json",
+            auth=twitter_account_auth,
+            data=json.dumps(DM_sent_body)
+        )
 
         # 返信を”Get DM”に書き換える
         respon_json["status"] = "Return DM"
