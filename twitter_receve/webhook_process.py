@@ -86,8 +86,6 @@ def DM_catch(twitter_account_auth, request, respon_json):
 # フォローされた時
 def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json):
 
-    print(json.dumps(request.json, indent=2))
-
     if request.json["follow_events"][0]["source"]["id"] == os.environ['MYTWITTER_ACCOUNT_ID']:
         # ”ユーザ情報をDBに書き込んだ”という返信
         respon_json["New User"] = "NO"

@@ -83,7 +83,7 @@ class User(db.Model):
 
         self.twitter_userid = twitter_userid
 
-        self.opennessq = openness
+        self.openness = openness
         self.adventurousness = adventurousness
         self.artistic_interests = artistic_interests
         self.emotionality = emotionality
