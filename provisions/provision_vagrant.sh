@@ -9,10 +9,11 @@ echo 'eval "$(pyenv init -)"' >> ~/.profile
 source ~/.profile
 
 echo '「mysql database create」'
+# できていないので手動で入力
 mysql --version
 expect -c '
 set timeout 5
-spawn mysql -u root -p -e \"create database koukokuDB\"
+spawn mysql -u root -p -e \"create database koukokuDB;\"
 expect \"password:\"
 send root\n
 expect \"$\"
