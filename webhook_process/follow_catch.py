@@ -6,12 +6,12 @@ from watson_developer_cloud import PersonalityInsightsV3
 from flask import Flask, request
 import json, os, requests
 # DB用のモデル
-from webhook_process.koukokuDB.models import User
-from webhook_process.koukokuDB.models import UserStatus
-from webhook_process.koukokuDB.database import db
+from DB.koukokuDB.models import User
+from DB.koukokuDB.models import UserStatus
+from DB.koukokuDB.database import db
 
 # フォローされた時
-def follow_catch(twitter_account_auth, watson_personal_API, request, respon_json):
+def process(twitter_account_auth, watson_personal_API, request, respon_json):
 
     if request.json["follow_events"][0]["source"]["id"] == os.environ['MYTWITTER_ACCOUNT_ID']:
         # ”ユーザ情報をDBに書き込んだ”という返信

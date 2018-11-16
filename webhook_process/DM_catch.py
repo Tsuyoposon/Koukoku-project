@@ -4,16 +4,16 @@ import twitter
 from flask import Flask, request
 import json, os, requests
 # DB用のモデル
-from webhook_process.koukokuDB.models import User
-from webhook_process.koukokuDB.models import UserStatus
-from webhook_process.koukokuDB.database import db
+from DB.koukokuDB.models import User
+from DB.koukokuDB.models import UserStatus
+from DB.koukokuDB.database import db
 # sagemakerの推薦モデルを利用
 import boto3
 # 乱数生成
 import random
 
 # DMをもらった時
-def DM_catch(twitter_account_auth, request, respon_json):
+def process(twitter_account_auth, request, respon_json):
     # print(json.dumps(request.json, indent=2))
     if request.json["direct_message_events"][0]["message_create"]["sender_id"] != os.environ['MYTWITTER_ACCOUNT_ID']:
 

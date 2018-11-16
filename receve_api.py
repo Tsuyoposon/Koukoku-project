@@ -14,11 +14,11 @@ from webhook_process import DM_catch
 # followイベントを受けた時の処理関数
 from webhook_process import follow_catch
 # DB用import
-import webhook_process.koukokuDB.models
-from webhook_process.koukokuDB.database import init_db
+import DB.koukokuDB.models
+from DB.koukokuDB.database import init_db
 
 app = Flask(__name__)
-app.config.from_object('webhook_process.koukokuDB.config.Config')
+app.config.from_object('DB.koukokuDB.config.Config')
 init_db(app)
 # twitter操作のための認証
 twitter_account_auth = OAuth1(
@@ -61,10 +61,10 @@ def webhook_catch():
     }
     # webhookイベントがユーザにフォローされた時の処理
     if request.json.get("follow_events"):
-        return follow_catch.follow_catch(twitter_account_auth, watson_personal_API, request, respon_json)
+        return follow_catch.process(twitter_account_auth, watson_personal_API, request, respon_json)
     # webhookイベントがDMの時の処理
     elif request.json.get("direct_message_events"):
-        return DM_catch.DM_catch(twitter_account_auth, request, respon_json)
+        return DM_catch.process(twitter_account_auth, request, respon_json)
     # webhookイベントがそれ以外であれば何もしない
     else:
          return json.dumps(respon_json)
