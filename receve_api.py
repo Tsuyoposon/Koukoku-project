@@ -55,7 +55,7 @@ def webhook_catch():
 
     # 返信用json
     respon_json = {
-        "status"   : "OK",
+        "DM"       : "",
         "New User" : "",
         "Follow"   : ""
     }

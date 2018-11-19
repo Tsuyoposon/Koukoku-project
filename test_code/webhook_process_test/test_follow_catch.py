@@ -42,9 +42,9 @@ class TestFollowCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "status" : "Get follow",
+            "DM"       : "",
             "New User" : "OK",
-            "Follow" : "OK"
+            "Follow"   : "OK"
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
@@ -76,9 +76,9 @@ class TestFollowCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "status" : "Get follow",
+            "DM"       : "",
             "New User" : "NO",
-            "Follow" : "NO"
+            "Follow"   : "NO"
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合

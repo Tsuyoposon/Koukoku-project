@@ -44,9 +44,9 @@ class TestElse(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "status" : "OK",
+            "DM"       : "",
             "New User" : "",
-            "Follow" : ""
+            "Follow"   : ""
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合

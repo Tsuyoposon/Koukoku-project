@@ -59,15 +59,15 @@ def process(twitter_account_auth, request, respon_json):
 
         if response.status_code == 200:
             # DMが返信できた
-            respon_json["status"] = "Return DM"
+            respon_json["DM"] = "Return DM"
             return json.dumps(respon_json)
         else:
             # DMが返信できなかった
-            respon_json["status"] = "Not sent DM"
+            respon_json["DM"] = "Not sent DM"
             return json.dumps(respon_json)
     else:
-        # 返信を”Get DM”に書き換える
-        respon_json["status"] = "Get DM"
+        # 自分に対してのDMなので何もしない
+        respon_json["DM"] = "My DM event"
         return json.dumps(respon_json)
 
 def recommen_sort(boto3_response):
