@@ -38,9 +38,16 @@ test-code: # テストコードの実行!
         code: FLASK_APP=receve_api.py flask db upgrade
 
     - script:
-      name: TEST:twitter_receve!!
-      code: python -m unittest discover test_code/twitter_test -v
+      name: TEST:follow_catch!!
+      code: python -m unittest test_code.webhook_process_test.test_follow_catch -v
 
+    - script:
+      name: TEST:DM_catch!!
+      code: python -m unittest test_code.webhook_process_test.test_DM_catch -v
+
+    - script:
+      name: TEST:else!!
+      code: python -m unittest test_code.webhook_process_test.test_else -v
     # - script:
     #   name: TEST:all_test!!
     #   code: python -m unittest discover -v
