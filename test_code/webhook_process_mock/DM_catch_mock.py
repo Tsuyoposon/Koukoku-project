@@ -13,8 +13,13 @@ def mocked_twitter_API(*args, **kwargs):
     # DMを送る時のrequest(POST)
     if args[0] == "https://api.twitter.com/1.1/direct_messages/events/new.json":
         catch_json = json.loads(kwargs["data"])
+        sent_message = "1-A19 AmbientLetter：わからないスペルをこっそり知るための筆記検出および文字提示手法\n"\
+            "1-A04 ニオイセンサーによるニオイの可視化と官能試験との相関性\n"\
+            "1-A02 ProtoHole: 穴と音響センシングを用いたインタラクティブな３Dプリントオブジェクトの提案\n"\
+            "1-A06 VRショールームのためのVR酔いを抑えた歩行移動インタフェース\n"\
+            "1-A07 スマートウォッチを用いたモノづくりの動作検出に対する試み"
         if catch_json["event"]["message_create"]["target"]["recipient_id"] == os.environ['TEST_ACCOUNT_ID'] and \
-        catch_json["event"]["message_create"]["message_data"]["text"] == "こんにちは！":
+        sent_message in catch_json["event"]["message_create"]["message_data"]["text"]:
             return MockResponse({}, 200)
         return MockResponse({}, 500)
 # 推薦エンドポイントの動作を再現
