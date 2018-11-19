@@ -19,8 +19,6 @@ import random
 # DMをもらった時
 def process(twitter_account_auth, request, respon_json):
     if request.json["direct_message_events"][0]["message_create"]["sender_id"] != os.environ['MYTWITTER_ACCOUNT_ID']:
-
-        # 推薦処理
         # DMを送ったユーザの情報をDBから取得
         user = db.session.query(User).filter_by(
             twitter_userid=request.json["direct_message_events"][0]["message_create"]["sender_id"]

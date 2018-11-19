@@ -17,7 +17,6 @@ from DB.koukokuDB.database import db
 
 # フォローされた時
 def process(twitter_account_auth, watson_personal_API, request, respon_json):
-
     if request.json["follow_events"][0]["source"]["id"] != os.environ['MYTWITTER_ACCOUNT_ID']:
         # 自分が相手をフォローしているか確認する
         respon_json["Follow"] = check_friendship(request.json["follow_events"][0]["source"]["id"], twitter_account_auth)
@@ -60,6 +59,8 @@ def process(twitter_account_auth, watson_personal_API, request, respon_json):
         respon_json["New User"] = "NO"
         respon_json["Follow"] = "NO"
         return json.dumps(respon_json)
+
+
 
 def check_friendship(twitter_ID, twitter_account_auth):
     # 自分が相手をフォローしているか確認する
