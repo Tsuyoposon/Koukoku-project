@@ -1,21 +1,24 @@
 # webhookトークンの生成
 import base64, hashlib, hmac
 # API処理用
-from flask import Flask
-from flask import request
+from flask import Flask, request
 import json, os
 from requests_oauthlib import OAuth1
 # python-twitter用 wastonAPI用
 import twitter
 from watson_developer_cloud import PersonalityInsightsV3
-# webhookイベントの時の処理関数
-from twitter_receve import webhook_process
+
+# 自作モジュール
+# DMイベントを受けた時の処理関数
+from webhook_process import DM_catch
+# followイベントを受けた時の処理関数
+from webhook_process import follow_catch
 # DB用import
-import twitter_receve.koukokuDB.models
-from twitter_receve.koukokuDB.database import init_db
+import DB.koukokuDB.models
+from DB.koukokuDB.database import init_db
 
 app = Flask(__name__)
-app.config.from_object('twitter_receve.koukokuDB.config.Config')
+app.config.from_object('DB.koukokuDB.config.Config')
 init_db(app)
 # twitter操作のための認証
 twitter_account_auth = OAuth1(
@@ -52,16 +55,16 @@ def webhook_catch():
 
     # 返信用json
     respon_json = {
-        "status"   : "OK",
+        "DM"       : "",
         "New User" : "",
         "Follow"   : ""
     }
     # webhookイベントがユーザにフォローされた時の処理
     if request.json.get("follow_events"):
-        return webhook_process.follow_catch(twitter_account_auth, watson_personal_API, request, respon_json)
+        return follow_catch.process(twitter_account_auth, watson_personal_API, request, respon_json)
     # webhookイベントがDMの時の処理
     elif request.json.get("direct_message_events"):
-        return webhook_process.DM_catch(twitter_account_auth, request, respon_json)
+        return DM_catch.process(twitter_account_auth, request, respon_json)
     # webhookイベントがそれ以外であれば何もしない
     else:
          return json.dumps(respon_json)

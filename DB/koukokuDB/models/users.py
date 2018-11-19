@@ -1,5 +1,5 @@
 from datetime import datetime
-from twitter_receve.koukokuDB.database import db
+from DB.koukokuDB.database import db
 
 class User(db.Model):
 
