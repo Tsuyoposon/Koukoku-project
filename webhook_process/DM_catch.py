@@ -9,19 +9,21 @@ from flask import Flask, request
 import json, os, requests
 # DB用のモデル
 from DB.koukokuDB.models import User
-from DB.koukokuDB.models import UserStatus
 from DB.koukokuDB.database import db
 # sagemakerの推薦モデルを利用
 import boto3
 # 乱数生成
 import random
+# twitter_IDをハッシュ化
+import hashlib
 
 # DMをもらった時
 def process(twitter_account_auth, request, respon_json):
     if request.json["direct_message_events"][0]["message_create"]["sender_id"] != os.environ['MYTWITTER_ACCOUNT_ID']:
         # DMを送ったユーザの情報をDBから取得
+        twitter_ID = request.json["direct_message_events"][0]["message_create"]["sender_id"]
         user = db.session.query(User).filter_by(
-            twitter_userid=request.json["direct_message_events"][0]["message_create"]["sender_id"]
+            twitter_userid_hash=hashlib.sha1(bytearray(twitter_ID, 'UTF-8')).hexdigest()
             ).first()
         user_byte_data = user.all_params()
         # boto3でsagemakerのクライアントを作成

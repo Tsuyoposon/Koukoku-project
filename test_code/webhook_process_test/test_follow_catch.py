@@ -57,7 +57,7 @@ class TestFollowCatch(unittest.TestCase):
         # DB挿入結果の照会
         with app.app_context():
             user = User.query.get(1)
-        self.assertEqual(user.twitter_userid, os.environ['TEST_ACCOUNT_ID'])
+        self.assertEqual(user.twitter_userid_hash, "a885426aedc08aa137078d16dfe28899b512d827")
     # フォローが来た時(既にフォローしている)の動作を確認
     @mock.patch('requests.get', side_effect=follow_catch_mock.mocked_twitter_API_2)
     @mock.patch('requests.post', side_effect=follow_catch_mock.mocked_twitter_API)
