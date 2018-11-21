@@ -70,6 +70,8 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
 
+    feedbacks = db.relationship('Feedback', backref='user', lazy='dynamic')
+
     def __init__(self, twitter_userid_hash,
         openness, adventurousness, artistic_interests, emotionality, imagination, intellect, liberalism,
         conscientiousness, achievement_striving, cautiousness, dutifulness, orderliness, self_discipline, self_efficacy,
