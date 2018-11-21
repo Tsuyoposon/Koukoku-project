@@ -11,7 +11,8 @@ class Recommen_item(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
 
-    def __init__(self, recommen_item_name):
+    def __init__(self, id, recommen_item_name):
+        self.id = id
         self.recommen_item_name = recommen_item_name
 
     def __repr__(self):
