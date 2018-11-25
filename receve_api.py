@@ -16,12 +16,10 @@ from webhook_process import follow_catch
 # DB用import
 import DB.koukokuDB.models
 from DB.koukokuDB.database import init_db
-from DB.koukokuDB import reset_recommen_items
 
 app = Flask(__name__)
 app.config.from_object('DB.koukokuDB.config.Config')
 init_db(app)
-reset_recommen_items.process(app)
 # twitter操作のための認証
 twitter_account_auth = OAuth1(
     os.environ['TWITTER_CONSUMER'],

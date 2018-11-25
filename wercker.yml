@@ -9,8 +9,7 @@ services:
     env:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: koukokuDB
-    command: mysqld --character-set-server=utf8mb4 --default-character-set=utf8mb4
-    
+
 
 build: # ビルド設定(パッケージ・ライブラリのインストール確認)
   steps:
