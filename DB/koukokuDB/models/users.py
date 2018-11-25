@@ -6,7 +6,7 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    twitter_userid = db.Column(db.String(255), nullable=False)
+    twitter_userid_hash = db.Column(db.String(40), index=True, nullable=False)
 
     openness = db.Column(db.Float, nullable=False)
     adventurousness = db.Column(db.Float, nullable=False)
@@ -70,7 +70,9 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
 
-    def __init__(self, twitter_userid,
+    feedbacks = db.relationship('Feedback', backref='user', lazy='dynamic')
+
+    def __init__(self, twitter_userid_hash,
         openness, adventurousness, artistic_interests, emotionality, imagination, intellect, liberalism,
         conscientiousness, achievement_striving, cautiousness, dutifulness, orderliness, self_discipline, self_efficacy,
         extraversion, activity_level, assertiveness, cheerfulness, excitement_seeking, friendliness, gregariousness,
@@ -81,7 +83,7 @@ class User(db.Model):
         value_conservation, value_openness_to_change, value_hedonism, value_self_enhancement, value_self_transcendence
     ):
 
-        self.twitter_userid = twitter_userid
+        self.twitter_userid_hash = twitter_userid_hash
 
         self.openness = openness
         self.adventurousness = adventurousness
@@ -143,7 +145,7 @@ class User(db.Model):
         self.value_self_transcendence = value_self_transcendence
 
     def __repr__(self):
-        return '<TwitterUserID %r>' % self.twitter_userid
+        return '<TwitterUserID %r>' % self.twitter_userid_hash
 
     def all_params(self):
         all_params_string = f'{self.openness},{self.adventurousness},{self.artistic_interests},{self.emotionality},{self.imagination},{self.intellect},{self.liberalism},' + \

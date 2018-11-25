@@ -12,8 +12,9 @@ from flask import Flask, request
 import json, os, requests
 # DB用のモデル
 from DB.koukokuDB.models import User
-from DB.koukokuDB.models import UserStatus
 from DB.koukokuDB.database import db
+# twitter_IDをハッシュ化
+import hashlib
 
 # フォローされた時
 def process(twitter_account_auth, watson_personal_API, request, respon_json):
@@ -22,7 +23,8 @@ def process(twitter_account_auth, watson_personal_API, request, respon_json):
         respon_json["Follow"] = check_friendship(request.json["follow_events"][0]["source"]["id"], twitter_account_auth)
 
         # DB内に登録しようとしているユーザが既にいるのか確認する
-        check_user = User.query.filter_by(twitter_userid=request.json["follow_events"][0]["source"]["id"]).first()
+        twitter_ID_hash = hashlib.sha1(bytearray(request.json["follow_events"][0]["source"]["id"], 'UTF-8')).hexdigest()
+        check_user = User.query.filter_by(twitter_userid_hash=twitter_ID_hash).first()
         if check_user is None:
             # 相手のツイート10件を取得
             DM_user_timeline = requests.get(
@@ -87,7 +89,7 @@ def check_friendship(twitter_ID, twitter_account_auth):
 
 def insert_user(watson_renponse, twitter_ID):
     user = User(
-        twitter_ID,
+        hashlib.sha1(bytearray(twitter_ID, 'UTF-8')).hexdigest(),
         watson_renponse["personality"][0]["percentile"],
         watson_renponse["personality"][0]["children"][0]["percentile"],
         watson_renponse["personality"][0]["children"][1]["percentile"],

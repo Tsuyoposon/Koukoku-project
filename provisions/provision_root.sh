@@ -11,3 +11,11 @@ apt-get -y install expect
 echo "mysql-server mysql-server/root_password password root" | debconf-set-selections
 echo "mysql-server mysql-server/root_password_again password root" | debconf-set-selections
 apt-get -y install mysql-server
+
+sudo echo '
+[mysqld]
+character-set-server=utf8mb4
+
+[client]
+default-character-set=utf8mb4
+' >> /etc/mysql/my.cnf

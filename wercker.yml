@@ -10,6 +10,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: koukokuDB
 
+
 build: # ビルド設定(パッケージ・ライブラリのインストール確認)
   steps:
     # pipのでパッケージインストール
@@ -38,6 +39,19 @@ test-code: # テストコードの実行!
         code: FLASK_APP=receve_api.py flask db upgrade
 
     - script:
+        name: mysql set data!!
+        code: |
+          FLASK_APP=receve_api.py flask shell <<EOS
+          from DB.koukokuDB.models import Recommen_item
+          Recommen_item.set_recommen_items(app)
+          quit()
+          EOS
+
+    - script:
+      name: TEST:before!!
+      code: python -m unittest test_code.webhook_process_test.test_before -v
+
+    - script:
       name: TEST:follow_catch!!
       code: python -m unittest test_code.webhook_process_test.test_follow_catch -v
 
@@ -46,8 +60,5 @@ test-code: # テストコードの実行!
       code: python -m unittest test_code.webhook_process_test.test_DM_catch -v
 
     - script:
-      name: TEST:else!!
-      code: python -m unittest test_code.webhook_process_test.test_else -v
-    # - script:
-    #   name: TEST:all_test!!
-    #   code: python -m unittest discover -v
+      name: TEST:else_catch!!
+      code: python -m unittest test_code.webhook_process_test.test_else_catch -v
