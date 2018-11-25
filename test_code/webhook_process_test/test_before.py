@@ -34,7 +34,7 @@ class TestBefore(unittest.TestCase):
         self.assertEqual(response.data, response_body_encode)
 
     # 推薦アイテムがセットされているか確認
-    def test_reset_recommen_items(self):
+    def test_set_recommen_items(self):
 
         app = Flask(__name__)
         app.config.from_object('DB.koukokuDB.config.Config')

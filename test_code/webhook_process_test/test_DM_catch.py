@@ -20,10 +20,37 @@ class TestDMCatch(unittest.TestCase):
         app.config.from_object('DB.koukokuDB.config.Config')
         self.app = receve_api.app.test_client()
 
-    # DMが来た時の動作を確認
+    # 「推薦」メッセージが来た時の動作を確認
     @mock.patch('boto3.client', side_effect=DM_catch_mock.boto3_client)
     @mock.patch('requests.post', side_effect=DM_catch_mock.mocked_twitter_API)
-    def test_twitter_DM(self, mock_post, mock_boto3):
+    def test_twitter_DM_recommen(self, mock_post, mock_boto3):
+        # DMがきた時のjsonをロード
+        with open("test_code/test_json/direct_message_events_recommen.json", "r") as DM_event_json_file:
+            DM_event_json = json.load(DM_event_json_file)
+            DM_event_json["direct_message_events"][0]["message_create"]["sender_id"] = os.environ['TEST_ACCOUNT_ID']
+
+        # twitterからのDMイベントのAPIを再現
+        response = self.app.post(
+            "/webhooks/twitter",
+            content_type='application/json',
+            data=json.dumps(DM_event_json)
+        )
+
+        # レスポンス結果の再現
+        response_body = {
+            "DM"       : "Recommen DM",
+            "New User" : "",
+            "Follow"   : ""
+        }
+        response_body_encode = json.dumps(response_body).encode()
+        # レスポンス結果のの照合
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, response_body_encode)
+
+
+    # DMが来た時の動作を確認
+    @mock.patch('requests.post', side_effect=DM_catch_mock.mocked_twitter_API)
+    def test_twitter_DM(self, mock_post):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
@@ -38,7 +65,7 @@ class TestDMCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "Return DM",
+            "DM"       : "else DM event",
             "New User" : "",
             "Follow"   : ""
         }
