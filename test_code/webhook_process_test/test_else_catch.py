@@ -5,30 +5,12 @@ import receve_api
 from flask import Flask, request
 import json
 
-class TestElse(unittest.TestCase):
+class TestElseCatch(unittest.TestCase):
     # test_receve内関数を実行ごとに
     def setUp(self):
         app = Flask(__name__)
         app.config.from_object('DB.koukokuDB.config.Config')
         self.app = receve_api.app.test_client()
-
-    # webhookの登録が正常にできるか確認
-    def test_webhook_challenge(self):
-        # twitterからのリクエストAPIを再現
-        response = self.app.get("/webhooks/twitter?crc_token=foo")
-        # レスポンス結果の再現
-        if os.environ['ENV'] == "wercker":
-            response_body = {
-                "response_token": "sha256=D1UXbLq0ougTycgcBn9pWDTS2jarXz/3wS5yVJniPFY="
-            }
-        else:
-            response_body = {
-                "response_token": "sha256=ixNpKHq5nOOou0Vviyxnq6OyFiqJCPsF6rzyfIlP/o0="
-            }
-        response_body_encode = json.dumps(response_body).encode()
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, response_body_encode)
 
     # その他のイベント(お気に入り)が来た時の動作を確認
     def test_twitter_favorite(self):
