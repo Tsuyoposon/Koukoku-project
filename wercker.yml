@@ -41,10 +41,11 @@ test-code: # テストコードの実行!
     - script:
         name: mysql set data!!
         code: |
-          FLASK_APP=receve_api.py flask shell
-          from DB.koukokuDB.models import Recommen_item
-          Recommen_item.set_recommen_items(app)
-          quit()
+          FLASK_APP=receve_api.py flask shell <<-EOS
+            from DB.koukokuDB.models import Recommen_item
+            Recommen_item.set_recommen_items(app)
+            quit()
+          EOS
 
     - script:
       name: TEST:before!!
