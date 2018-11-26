@@ -36,7 +36,7 @@ def process(twitter_account_auth, request, respon_json):
                     "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
                 },
                 "message_data": {
-                    "text": "What's your favorite type of bird?",
+                    "text": "評価したいポスターを選択してください",
                     "quick_reply": {
                         "type": "options",
                         "options": reply_list

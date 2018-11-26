@@ -13,6 +13,7 @@ def mocked_twitter_API(*args, **kwargs):
     # DMを送る時のrequest(POST)
     if args[0] == "https://api.twitter.com/1.1/direct_messages/events/new.json":
         catch_json = json.loads(kwargs["data"])
+        # 推薦結果を送る時
         sent_message = "1-A19 AmbientLetter：わからないスペルをこっそり知るための筆記検出および文字提示手法\n"\
             "1-A04 ニオイセンサーによるニオイの可視化と官能試験との相関性\n"\
             "1-A02 ProtoHole: 穴と音響センシングを用いたインタラクティブな３Dプリントオブジェクトの提案\n"\
@@ -20,6 +21,11 @@ def mocked_twitter_API(*args, **kwargs):
             "1-A07 スマートウォッチを用いたモノづくりの動作検出に対する試み"
         if catch_json["event"]["message_create"]["target"]["recipient_id"] == os.environ['TEST_ACCOUNT_ID'] and \
         sent_message in catch_json["event"]["message_create"]["message_data"]["text"]:
+            return MockResponse({}, 200)
+        # quick-replies(推薦アイテム)を送信する時
+        sent_first_description = "1-A02 ProtoHole: 穴と音響センシングを用いたインタラクティブな３Dプリントオブジェクトの提案"
+        if catch_json["event"]["message_create"]["target"]["recipient_id"] == os.environ['TEST_ACCOUNT_ID'] and \
+        catch_json["event"]["message_create"]["message_data"]["quick_reply"]["options"][0]["description"] == sent_first_description:
             return MockResponse({}, 200)
         return MockResponse({}, 500)
 # 推薦エンドポイントの動作を再現
