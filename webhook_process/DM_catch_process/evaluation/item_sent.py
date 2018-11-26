@@ -1,22 +1,16 @@
 # DMで「評価」が来た時の処理
-# ①「推薦アイテムのquick-replies」を送る
-# ②選択してもらったら「評価(5段階)のquick-replies」を送る
-# ③「評価(5段階)のquick-replies」が送られたら過去のDMを見て「選択されたポスター」を探す
-# ④「評価」と「選択されたポスター」を評価DBに入れる
-# 　②〜③は別の場所
+# ①「推薦アイテムのquick-replies」を送る (item_sent)
+# ②選択してもらったら「評価(5段階)のquick-replies」を送る (evaluation_sent)
+# ③「評価(5段階)のquick-replies」が送られたら過去のDMを見て「選択されたポスター」を探す (evaluation_input)
+# ④「評価」と「選択されたポスター」を評価DBに入れる (evaluation_input)
 
-# python-twitter用
-import twitter
 # API処理用
 from flask import Flask, request
-import json, os, requests
+import json, requests
 # DB用のモデル
-from DB.koukokuDB.models import User
 from DB.koukokuDB.models import Recommen_item
-from DB.koukokuDB.database import db
 
-
-def process(twitter_account_auth, request, respon_json):
+def item_sent(twitter_account_auth, request, respon_json):
     # ①「推薦アイテムのquick-replies」を送る
     # 送るquick-repliesの作成
     recommen_items = Recommen_item.query.all()
@@ -53,9 +47,9 @@ def process(twitter_account_auth, request, respon_json):
     )
     if response.status_code == 200:
         # DMが返信できた
-        respon_json["DM"] = "evaluation DM"
+        respon_json["DM"] = "evaluation item_sent DM"
         return json.dumps(respon_json)
     else:
         # DMが返信できなかった
-        respon_json["DM"] = "Not evaluation DM"
+        respon_json["DM"] = "Not evaluation item_sent DM"
         return json.dumps(respon_json)

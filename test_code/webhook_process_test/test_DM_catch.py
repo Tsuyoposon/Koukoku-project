@@ -66,7 +66,7 @@ class TestDMCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "evaluation DM",
+            "DM"       : "evaluation item_sent DM",
             "New User" : "",
             "Follow"   : ""
         }
