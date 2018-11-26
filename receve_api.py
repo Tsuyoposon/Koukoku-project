@@ -67,7 +67,7 @@ def webhook_catch():
         return DM_catch.process(twitter_account_auth, request, respon_json)
     # webhookイベントがそれ以外であれば何もしない
     else:
-         return json.dumps(respon_json)
+        return json.dumps(respon_json)
 
 
 

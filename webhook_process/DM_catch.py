@@ -5,6 +5,8 @@ from flask import Flask, request
 import json, os, requests
 # 「推薦」処理関数
 from webhook_process.DM_catch_process import recommen
+# 「評価」処理関数
+from webhook_process.DM_catch_process import evaluation
 
 # DMをもらった時
 def process(twitter_account_auth, request, respon_json):
@@ -15,10 +17,10 @@ def process(twitter_account_auth, request, respon_json):
             return recommen.process(twitter_account_auth, request, respon_json)
         elif request.json["direct_message_events"][0]["message_create"]["message_data"]["text"] == "評価":
             # 「評価」処理
-            # return evaluation.process(twitter_account_auth, request, respon_json)
-            print("「評価」")
+            return evaluation.process(twitter_account_auth, request, respon_json)
         else:
             # それ以外のメッセージ
+            print(json.dumps(request.json, indent=2))
             respon_json["DM"] = "else DM event"
             return json.dumps(respon_json)
     else:
