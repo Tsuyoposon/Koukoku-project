@@ -1,4 +1,11 @@
 # TwitterアカウントにDMが送られた時の処理
+# DM_event --- 自分が送信したDMイベント(何もしない)
+#           |- 利用者が送信したDMイベント --- 「推薦」と送信された (推薦結果表示)
+#                                      |- 「評価」と送信された (推薦アイテムのquick_replyを送信)
+#                                      |- quick_replyイベント --- 推薦アイテムの選択結果 (評価のquick_replyを送信)
+#                                      |                      |- 評価の選択結果 (結果をinsert)
+#                                      |- その他DM(何もしない)
+
 
 # API処理用
 from flask import Flask, request
@@ -11,28 +18,28 @@ from webhook_process.DM_catch_process import evaluation
 
 # DMをもらった時
 def process(twitter_account_auth, request, respon_json):
-    # 他人からのDMイベントの時
-    if request.json["direct_message_events"][0]["message_create"]["sender_id"] != os.environ['MYTWITTER_ACCOUNT_ID']:
+
+    if request.json["direct_message_events"][0]["message_create"]["sender_id"] == os.environ['MYTWITTER_ACCOUNT_ID']:
+        # 自分が送信したDMイベント(何もしない)
+        respon_json["DM"] = "My DM event"
+        return json.dumps(respon_json)
+    else:
         if request.json["direct_message_events"][0]["message_create"]["message_data"]["text"] == "推薦":
-            # 「推薦」が送られた処理
+            # 「推薦」と送信された (推薦結果表示)
             return recommen.process(twitter_account_auth, request, respon_json)
         elif request.json["direct_message_events"][0]["message_create"]["message_data"]["text"] == "評価":
-            # 「評価」が送られた処理
+            # 「評価」と送信された (推薦アイテムのquick_replyを送信)
             return evaluation.item_sent(twitter_account_auth, request, respon_json)
         elif "quick_reply_response" in request.json["direct_message_events"][0]["message_create"]["message_data"]:
-            # 「評価によるquick-replies」が送られた処理
+            # quick_replyイベント
             if "hyouka" not in request.json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"]:
-                # 推薦アイテムのquick-repliesの時
+                # 推薦アイテムの選択結果 (評価のquick_replyを送信)
                 return evaluation.evaluation_sent(twitter_account_auth, request, respon_json)
             else:
-                # 評価のquick-repliesの時
+                # 評価の選択結果 (結果をinsert)
                 return evaluation.evaluation_insert(twitter_account_auth, request, respon_json)
         else:
-            # それ以外のメッセージ
+            # その他DM(何もしない)
             print(json.dumps(request.json, indent=2))
             respon_json["DM"] = "else DM event"
             return json.dumps(respon_json)
-    else:
-        # 自分に対してのDMイベントなので何もしない
-        respon_json["DM"] = "My DM event"
-        return json.dumps(respon_json)
