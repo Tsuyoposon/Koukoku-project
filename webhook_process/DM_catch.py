@@ -26,9 +26,7 @@ def process(twitter_account_auth, request, respon_json):
                 return evaluation.evaluation_sent(twitter_account_auth, request, respon_json)
             else:
                 # 評価のquick-repliesの時
-                print("evaluation input DM")
-                respon_json["DM"] = "evaluation input DM"
-                return json.dumps(respon_json)
+                return evaluation.evaluation_insert(twitter_account_auth, request, respon_json)
         else:
             # それ以外のメッセージ
             print(json.dumps(request.json, indent=2))

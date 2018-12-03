@@ -1,8 +1,7 @@
 # DMで「評価」が来た時の処理
 # ①「推薦アイテムのquick-replies」を送る (item_sent)
 # ②選択してもらったら「評価(5段階)のquick-replies」を送る (evaluation_sent)
-# ③「評価(5段階)のquick-replies」が送られたら過去のDMを見て「選択されたポスター」を探す (evaluation_input)
-# ④「評価」と「選択されたポスター」を評価DBに入れる (evaluation_input)
+# ③「評価」と「選択されたポスター」と「ユーザid」を評価DBに入れる (evaluation_insert)
 
 # API処理用
 from flask import Flask, request

@@ -1,8 +1,7 @@
 # DMで「評価」が来た時の処理
 # ①「推薦アイテムのquick-replies」を送る (item_sent)
 # ②選択してもらったら「評価(5段階)のquick-replies」を送る (evaluation_sent)
-# ③「評価(5段階)のquick-replies」が送られたら過去のDMを見て「選択されたポスター」を探す (evaluation_input)
-# ④「評価」と「選択されたポスター」を評価DBに入れる (evaluation_input)
+# ③「評価」と「選択されたポスター」と「ユーザid」を評価DBに入れる (evaluation_insert)
 
 # API処理用
 from flask import Flask, request
@@ -11,31 +10,32 @@ import json, requests
 def evaluation_sent(twitter_account_auth, request, respon_json):
     # ②選択してもらったら「評価(5段階)のquick-replies」を送る
     # 送るquick-repliesの作成
+    select_item = request.json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"]
     reply_list = [
         {
             "label"       : "1",
             "description" : "とてもつまらない",
-            "metadata"    : "hyouka-1"
+            "metadata"    : select_item + ",hyouka-1"
         },
         {
             "label"       : "2",
             "description" : "つまらない",
-            "metadata"    : "hyouka-2"
+            "metadata"    : select_item + ",hyouka-2"
         },
         {
             "label"       : "3",
             "description" : "普通",
-            "metadata"    : "hyouka-3"
+            "metadata"    : select_item + ",hyouka-3"
         },
         {
             "label"       : "4",
             "description" : "良かった",
-            "metadata"    : "hyouka-4"
+            "metadata"    : select_item + ",hyouka-4"
         },
         {
             "label"       : "5",
             "description" : "とても良かった",
-            "metadata"    : "hyouka-5"
+            "metadata"    : select_item + ",hyouka-5"
         }
     ]
     DM_sent_body = {
