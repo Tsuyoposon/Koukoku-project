@@ -1,0 +1,57 @@
+{
+	"for_user_id": "test_account_user",
+	"direct_message_events": [
+		{
+			"type": "message_create",
+			"id": "1066947669577281540",
+			"created_timestamp": "1543215122013",
+			"message_create": {
+				"target": {
+					"recipient_id": "test_account_user"
+				},
+				"sender_id": "test_account",
+				"message_data": {
+					"text": "aaa",
+					"entities": {
+						"hashtags": [],
+						"symbols": [],
+						"user_mentions": [],
+						"urls": []
+					},
+					"quick_reply_response": {
+						"type": "options",
+						"metadata": ""
+					}
+				}
+			}
+		}
+	],
+	"users": {
+		"test_account": {
+			"id": "test_account",
+			"created_timestamp": "1527742989227",
+			"name": "test-account",
+			"screen_name": "Test",
+			"protected": false,
+			"verified": false,
+			"followers_count": 1,
+			"friends_count": 1,
+			"statuses_count": 15,
+			"profile_image_url": "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
+			"profile_image_url_https": "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
+		},
+		"test_account_user": {
+			"id": "account_user",
+			"created_timestamp": "1527742436350",
+			"name": "project",
+			"screen_name": "Project",
+			"protected": false,
+			"verified": false,
+			"followers_count": 1,
+			"friends_count": 1,
+			"statuses_count": 2,
+			"profile_image_url": "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
+			"profile_image_url_https": "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"
+		}
+	}
+}

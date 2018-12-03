@@ -10,6 +10,7 @@ from test_code.webhook_process_mock import follow_catch_mock
 # DB用のimport
 from DB.koukokuDB.database import reset_db, init_db, db
 from DB.koukokuDB.models import User
+from DB.koukokuDB.models import Recommen_item
 
 class TestFollowCatch(unittest.TestCase):
     # test_receve実行前に1度だけ
@@ -19,7 +20,7 @@ class TestFollowCatch(unittest.TestCase):
         app.config.from_object('DB.koukokuDB.config.Config')
         init_db(app)
         reset_db(app)
-        print('DB reset!!')
+        Recommen_item.set_recommen_items(app)
     # test_receve内関数を実行ごとに
     def setUp(self):
         self.app = receve_api.app.test_client()

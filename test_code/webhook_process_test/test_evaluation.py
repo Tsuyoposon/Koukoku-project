@@ -5,14 +5,12 @@ import receve_api
 from flask import Flask, request
 import json
 # mockのimport
-from test_code.webhook_process_mock import DM_catch_mock
+from test_code.webhook_process_mock import evaluation_mock
 # DB用のimport
-from DB.koukokuDB.database import db
-from DB.koukokuDB.models import User
-# sagemakerの推薦モデルを利用
-import boto3
+from DB.koukokuDB.database import reset_db, init_db, db
+from DB.koukokuDB.models import Feedback
 
-class TestDMCatch(unittest.TestCase):
+class TestEvaluation(unittest.TestCase):
 
     # test_receve内関数を実行ごとに
     def setUp(self):
@@ -20,16 +18,14 @@ class TestDMCatch(unittest.TestCase):
         app.config.from_object('DB.koukokuDB.config.Config')
         self.app = receve_api.app.test_client()
 
-    # 「推薦」メッセージが来た時の動作を確認
-    @mock.patch('boto3.client', side_effect=DM_catch_mock.boto3_client)
-    @mock.patch('requests.post', side_effect=DM_catch_mock.mocked_twitter_API)
-    def test_twitter_DM_recommen(self, mock_post, mock_boto3):
+    # 「選択アイテムのquick-replies」メッセージが来た時の動作を確認
+    @mock.patch('requests.post', side_effect=evaluation_mock.mocked_twitter_API)
+    def test_evaluation(self, mock_post):
         # DMがきた時のjsonをロード
-        with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
+        with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
             DM_event_json["direct_message_events"][0]["message_create"]["sender_id"] = os.environ['TEST_ACCOUNT_ID']
-            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["text"] = "推薦"
-
+            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = 0
         # twitterからのDMイベントのAPIを再現
         response = self.app.post(
             "/webhooks/twitter",
@@ -39,7 +35,7 @@ class TestDMCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "Recommen DM",
+            "DM"       : "evaluation evaluation_sent DM",
             "New User" : "",
             "Follow"   : ""
         }
@@ -48,15 +44,13 @@ class TestDMCatch(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
 
-    # 「評価」メッセージが来た時の動作を確認
-    @mock.patch('requests.post', side_effect=DM_catch_mock.mocked_twitter_API)
-    def test_twitter_DM_evaluation(self, mock_post):
+    # 「評価結果のquick-replies」メッセージが来た時の動作を確認
+    def test_evaluation(self):
         # DMがきた時のjsonをロード
-        with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
+        with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
             DM_event_json["direct_message_events"][0]["message_create"]["sender_id"] = os.environ['TEST_ACCOUNT_ID']
-            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["text"] = "評価"
-
+            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = "0,hyouka-1"
         # twitterからのDMイベントのAPIを再現
         response = self.app.post(
             "/webhooks/twitter",
@@ -64,9 +58,19 @@ class TestDMCatch(unittest.TestCase):
             data=json.dumps(DM_event_json)
         )
 
+        # insert結果の照合
+        app = Flask(__name__)
+        app.config.from_object('DB.koukokuDB.config.Config')
+        init_db(app)
+        with app.app_context():
+            feedback = Feedback.query.get(1)
+        self.assertEqual(feedback.user_id, 1)
+        self.assertEqual(feedback.recommen_item_id, 1)
+        self.assertEqual(feedback.feedback, 1)
+
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "evaluation item_sent DM",
+            "DM"       : "evaluation insert DM",
             "New User" : "",
             "Follow"   : ""
         }
@@ -74,13 +78,14 @@ class TestDMCatch(unittest.TestCase):
         # レスポンス結果のの照合
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
-    # DMが来た時の動作を確認
-    def test_twitter_DM(self):
+
+    # 「取り消し」メッセージが来た時の動作を確認
+    def test_evaluation(self):
         # DMがきた時のjsonをロード
-        with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
+        with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
             DM_event_json["direct_message_events"][0]["message_create"]["sender_id"] = os.environ['TEST_ACCOUNT_ID']
-
+            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = "cancel"
         # twitterからのDMイベントのAPIを再現
         response = self.app.post(
             "/webhooks/twitter",
@@ -90,7 +95,7 @@ class TestDMCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "else DM event",
+            "DM"       : "evaluation cancel quick_reply",
             "New User" : "",
             "Follow"   : ""
         }
