@@ -36,6 +36,11 @@ def evaluation_sent(twitter_account_auth, request, respon_json):
             "label"       : "5",
             "description" : "とても良かった",
             "metadata"    : select_item + ",hyouka-5"
+        },
+        {
+            "label"       : "取り消し",
+            "description" : "評価を取り消します",
+            "metadata"    : "cancel"
         }
     ]
     DM_sent_body = {

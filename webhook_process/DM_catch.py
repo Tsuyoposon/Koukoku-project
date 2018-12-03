@@ -2,7 +2,8 @@
 # DM_event --- 自分が送信したDMイベント(何もしない)
 #           |- 利用者が送信したDMイベント --- 「推薦」と送信された (推薦結果表示)
 #                                      |- 「評価」と送信された (推薦アイテムのquick_replyを送信)
-#                                      |- quick_replyイベント --- 推薦アイテムの選択結果 (評価のquick_replyを送信)
+#                                      |- quick_replyイベント --- 「取り消し」が選択された (何もしない)
+#                                      |                      |- 推薦アイテムの選択結果 (評価のquick_replyを送信)
 #                                      |                      |- 評価の選択結果 (結果をinsert)
 #                                      |- その他DM(何もしない)
 
@@ -32,7 +33,11 @@ def process(twitter_account_auth, request, respon_json):
             return evaluation.item_sent(twitter_account_auth, request, respon_json)
         elif "quick_reply_response" in request.json["direct_message_events"][0]["message_create"]["message_data"]:
             # quick_replyイベント
-            if "hyouka" not in request.json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"]:
+            if "cancel" == request.json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"]:
+                # 「取り消し」が選択された (何もしない)
+                respon_json["DM"] = "evaluation cancel quick_reply"
+                return json.dumps(respon_json)
+            elif "hyouka" not in request.json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"]:
                 # 推薦アイテムの選択結果 (評価のquick_replyを送信)
                 return evaluation.evaluation_sent(twitter_account_auth, request, respon_json)
             else:

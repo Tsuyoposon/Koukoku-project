@@ -15,12 +15,21 @@ def item_sent(twitter_account_auth, request, respon_json):
     recommen_items = Recommen_item.query.all()
     reply_list = []
     for i in range(len(recommen_items)):
+        recommen_item_name = recommen_items[i].recommen_item_name.split()
         reply_item = {
-            "label"       : "aaa",
+            "label"       : recommen_item_name[0],
             "description" : recommen_items[i].recommen_item_name,
             "metadata"    : str(i)
         }
         reply_list.append(reply_item)
+    #「取り消し」が選択できる様にする
+    reply_item = {
+        "label"       : "取り消し",
+        "description" : "評価を取り消します",
+        "metadata"    : "cancel"
+    }
+    reply_list.append(reply_item)
+
     DM_sent_body = {
         "event": {
             "type": "message_create",
