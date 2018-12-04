@@ -12,6 +12,9 @@ from DB.koukokuDB.models import Feedback
 from DB.koukokuDB.database import db
 # twitter_IDをハッシュ化
 import hashlib
+# s3_upload関数
+from aws_process import s3_upload
+
 
 def evaluation_insert(twitter_account_auth, request, respon_json):
     # ③評価」と「選択されたポスター」と「ユーザid」を評価DBに入れる
@@ -30,5 +33,6 @@ def evaluation_insert(twitter_account_auth, request, respon_json):
     db.session.add(feedback)
     db.session.commit()
 
+    s3_upload.process()
     respon_json["DM"] = "evaluation insert DM"
     return json.dumps(respon_json)
