@@ -1,5 +1,6 @@
 # s3に評価データcsvをアップロードする
 
+import os
 # DB用のモデル
 from DB.koukokuDB.models import User
 from DB.koukokuDB.models import Recommen_item
@@ -7,12 +8,14 @@ from DB.koukokuDB.models import Feedback
 from DB.koukokuDB.database import db
 # csv関連
 import csv
+# AWS関連
+import boto3
 
 def process():
     # データのロード
     feedbacks = Feedback.query.all()
     recommen_items = Recommen_item.query.all()
-    csv_header = [len(recommen_items), 52]
+    csv_header = [len(feedbacks), 52]
     for i in range(len(recommen_items)):
         csv_header.append(recommen_items[i].recommen_item_name)
 
@@ -28,3 +31,8 @@ def process():
             data_list = feedbacks[i].user.all_params_list()
             data_list.append(feedbacks[i].recommen_item_id - 1)
             writer.writerow(data_list)
+
+    # s3 upload
+    s3 = boto3.resource('s3')
+    bucket = s3.Bucket(os.environ['BUCKET_NAME'])
+    bucket.upload_file('feedbacks_traning.csv', 'feedbacks_data/feedbacks_traning.csv')
