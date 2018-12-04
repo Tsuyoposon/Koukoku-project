@@ -19,3 +19,16 @@ def mocked_twitter_API(*args, **kwargs):
         catch_json["event"]["message_create"]["message_data"]["quick_reply"]["options"][0]["description"] == sent_first_description:
             return MockResponse({}, 200)
         return MockResponse({}, 500)
+
+def boto3_resource(*args, **kwargs):
+    class MockBucket:
+        def Bucket(*args, **kwargs):
+            class MockUploadFile:
+                def upload_file(*args, **kwargs):
+                    return
+            if args[0] == os.environ['BUCKET_NAME']:
+                return MockUploadFile
+            return None
+    if args[0] == "s3":
+        return MockBucket
+    return None

@@ -20,12 +20,12 @@ class TestEvaluation(unittest.TestCase):
 
     # 「選択アイテムのquick-replies」メッセージが来た時の動作を確認
     @mock.patch('requests.post', side_effect=evaluation_mock.mocked_twitter_API)
-    def test_evaluation(self, mock_post):
+    def test_evaluation_item(self, mock_post):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
             DM_event_json["direct_message_events"][0]["message_create"]["sender_id"] = os.environ['TEST_ACCOUNT_ID']
-            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = 0
+            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = "0"
         # twitterからのDMイベントのAPIを再現
         response = self.app.post(
             "/webhooks/twitter",
@@ -45,7 +45,8 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(response.data, response_body_encode)
 
     # 「評価結果のquick-replies」メッセージが来た時の動作を確認
-    def test_evaluation(self):
+    @mock.patch('boto3.resource', side_effect=evaluation_mock.boto3_resource)
+    def test_evaluation_hyouka(self, mock_boto3):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
