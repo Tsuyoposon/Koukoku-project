@@ -39,6 +39,7 @@ def evaluation_insert(twitter_account_auth, request, respon_json):
     if len(feedbacks) % 10 == 0:
         s3_upload.process()
         update_model.process()
+        respon_json["Update_model"] = "OK"
 
     respon_json["DM"] = "evaluation insert DM"
     return json.dumps(respon_json)

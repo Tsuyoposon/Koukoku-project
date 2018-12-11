@@ -39,9 +39,10 @@ class TestDMCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "Recommen DM",
-            "New User" : "",
-            "Follow"   : ""
+            "DM"           : "Recommen DM",
+            "New User"     : "",
+            "Follow"       : "",
+            "Update_model" : ""
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
@@ -66,9 +67,10 @@ class TestDMCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "evaluation item_sent DM",
-            "New User" : "",
-            "Follow"   : ""
+            "DM"           : "evaluation item_sent DM",
+            "New User"     : "",
+            "Follow"       : "",
+            "Update_model" : ""
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
@@ -90,9 +92,10 @@ class TestDMCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "else DM event",
-            "New User" : "",
-            "Follow"   : ""
+            "DM"           : "else DM event",
+            "New User"     : "",
+            "Follow"       : "",
+            "Update_model" : ""
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合

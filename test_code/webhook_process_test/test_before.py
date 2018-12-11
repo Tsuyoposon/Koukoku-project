@@ -9,6 +9,15 @@ from DB.koukokuDB.database import reset_db, init_db, db
 from DB.koukokuDB.models import Recommen_item
 
 class TestBefore(unittest.TestCase):
+    # test_receve実行前に1度だけ
+    @classmethod
+    def setUpClass(self):
+        app = Flask(__name__)
+        app.config.from_object('DB.koukokuDB.config.Config')
+        init_db(app)
+        reset_db(app)
+        Recommen_item.set_recommen_items(app)
+
     # test_receve内関数を実行ごとに
     def setUp(self):
         app = Flask(__name__)
