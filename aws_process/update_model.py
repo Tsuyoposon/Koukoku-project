@@ -11,7 +11,7 @@ def process():
 
     # ログイン画面の設定
     options = Options()
-    options.binary_location = '/usr/bin/google-chrome'
+    options.binary_location = os.environ['BINARY_LOCATION']
     options.add_argument('--headless')
     driver = webdriver.Chrome('chromedriver', chrome_options=options)
     driver.get(os.environ['AWS_LOGIN_URL'])
