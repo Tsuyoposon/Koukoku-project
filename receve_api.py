@@ -55,9 +55,10 @@ def webhook_catch():
 
     # 返信用json
     respon_json = {
-        "DM"       : "",
-        "New User" : "",
-        "Follow"   : ""
+        "DM"           : "",
+        "New User"     : "",
+        "Follow"       : "",
+        "Update_model" : ""
     }
     # webhookイベントがユーザにフォローされた時の処理
     if request.json.get("follow_events"):

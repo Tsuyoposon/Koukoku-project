@@ -35,9 +35,10 @@ class TestEvaluation(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "evaluation evaluation_sent DM",
-            "New User" : "",
-            "Follow"   : ""
+            "DM"           : "evaluation evaluation_sent DM",
+            "New User"     : "",
+            "Follow"       : "",
+            "Update_model" : ""
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
@@ -45,8 +46,7 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(response.data, response_body_encode)
 
     # 「評価結果のquick-replies」メッセージが来た時の動作を確認
-    @mock.patch('boto3.resource', side_effect=evaluation_mock.boto3_resource)
-    def test_evaluation_hyouka(self, mock_boto3):
+    def test_evaluation_hyouka(self):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
@@ -71,9 +71,10 @@ class TestEvaluation(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "evaluation insert DM",
-            "New User" : "",
-            "Follow"   : ""
+            "DM"           : "evaluation insert DM",
+            "New User"     : "",
+            "Follow"       : "",
+            "Update_model" : ""
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
@@ -96,9 +97,10 @@ class TestEvaluation(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "evaluation cancel quick_reply",
-            "New User" : "",
-            "Follow"   : ""
+            "DM"           : "evaluation cancel quick_reply",
+            "New User"     : "",
+            "Follow"       : "",
+            "Update_model" : ""
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合

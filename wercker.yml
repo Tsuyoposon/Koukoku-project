@@ -39,15 +39,6 @@ test-code: # テストコードの実行!
         code: FLASK_APP=receve_api.py flask db upgrade
 
     - script:
-        name: mysql set data!!
-        code: |
-          FLASK_APP=receve_api.py flask shell <<EOS
-          from DB.koukokuDB.models import Recommen_item
-          Recommen_item.set_recommen_items(app)
-          quit()
-          EOS
-
-    - script:
       name: TEST:before!!
       code: python -m unittest test_code.webhook_process_test.test_before -v
 
@@ -66,3 +57,7 @@ test-code: # テストコードの実行!
     - script:
       name: TEST:else_catch!!
       code: python -m unittest test_code.webhook_process_test.test_else_catch -v
+
+    - script:
+      name: TEST:update_model!!
+      code: python -m unittest test_code.aws_process_test.test_update_model -v

@@ -10,19 +10,13 @@ from test_code.webhook_process_mock import follow_catch_mock
 # DB用のimport
 from DB.koukokuDB.database import reset_db, init_db, db
 from DB.koukokuDB.models import User
-from DB.koukokuDB.models import Recommen_item
 
 class TestFollowCatch(unittest.TestCase):
-    # test_receve実行前に1度だけ
-    @classmethod
-    def setUpClass(self):
-        app = Flask(__name__)
-        app.config.from_object('DB.koukokuDB.config.Config')
-        init_db(app)
-        reset_db(app)
-        Recommen_item.set_recommen_items(app)
+
     # test_receve内関数を実行ごとに
     def setUp(self):
+        app = Flask(__name__)
+        app.config.from_object('DB.koukokuDB.config.Config')
         self.app = receve_api.app.test_client()
 
     # フォローが来た時(まだフォローしていない)の動作を確認
@@ -43,9 +37,10 @@ class TestFollowCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "",
-            "New User" : "OK",
-            "Follow"   : "OK"
+            "DM"           : "",
+            "New User"     : "OK",
+            "Follow"       : "OK",
+            "Update_model" : ""
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
@@ -80,9 +75,10 @@ class TestFollowCatch(unittest.TestCase):
 
         # レスポンス結果の再現
         response_body = {
-            "DM"       : "",
-            "New User" : "NO",
-            "Follow"   : "NO"
+            "DM"           : "",
+            "New User"     : "NO",
+            "Follow"       : "NO",
+            "Update_model" : ""
         }
         response_body_encode = json.dumps(response_body).encode()
         # レスポンス結果のの照合
