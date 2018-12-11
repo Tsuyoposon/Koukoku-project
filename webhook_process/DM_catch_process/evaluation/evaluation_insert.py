@@ -14,7 +14,7 @@ from DB.koukokuDB.database import db
 import hashlib
 # s3_upload関数
 from aws_process import s3_upload
-from aws_process import create_training_job
+from aws_process import update_model
 
 
 def evaluation_insert(twitter_account_auth, request, respon_json):
@@ -39,6 +39,6 @@ def evaluation_insert(twitter_account_auth, request, respon_json):
     if len(feedbacks) % 10 == 0:
         s3_upload.process()
         update_model.process()
-        
+
     respon_json["DM"] = "evaluation insert DM"
     return json.dumps(respon_json)

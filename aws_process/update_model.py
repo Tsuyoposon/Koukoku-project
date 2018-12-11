@@ -18,15 +18,15 @@ def process():
 
     # ID/PASSでAWSにログイン
     id = driver.find_element_by_id("username")
-    id.send_keys(os.environ['AWS_LOGIN_NAME')
+    id.send_keys(os.environ['AWS_LOGIN_NAME'])
     password = driver.find_element_by_id("password")
-    password.send_keys(os.environ['AWS_LOGIN_PASS')
+    password.send_keys(os.environ['AWS_LOGIN_PASS'])
     time.sleep(1)
     login_button = driver.find_element_by_id("signin_button")
     login_button.click()
 
     # notebookの画面
-    driver.get(os.environ['AWS_NOTEBOOK_URL')
+    driver.get(os.environ['AWS_NOTEBOOK_URL'])
     time.sleep(10)
     run_all_cell = driver.find_element_by_xpath('//*[@id="run_int"]/button[4]')
     run_all_cell.click()
