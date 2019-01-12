@@ -1,7 +1,5 @@
 # Twitterアカウントに対してfollowされた時の処理
 # フォロー返しをする
-# followを解除されたら
-# こちらも解除
 
 # python-twitter用
 import twitter
@@ -12,12 +10,11 @@ from flask import Flask, request
 import json, os, requests
 # DB用のモデル
 from DB.koukokuDB.models import User
-from DB.koukokuDB.database import db
 # twitter_IDをハッシュ化
 import hashlib
 
 # フォローされた時
-def process(twitter_account_auth, watson_personal_API, request, respon_json):
+def process(twitter_account_auth, request, respon_json):
     if request.json["follow_events"][0]["source"]["id"] != os.environ['MYTWITTER_ACCOUNT_ID']:
         twitter_ID = request.json["follow_events"][0]["source"]["id"]
         # 自分が相手をフォローしているか確認する

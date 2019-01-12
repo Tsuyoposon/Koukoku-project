@@ -7,7 +7,7 @@ import json
 # mockのimport
 from test_code.webhook_process_mock import DM_catch_mock
 # DB用のimport
-from DB.koukokuDB.database import db, init_db
+from DB.koukokuDB.database import init_db
 from DB.koukokuDB.models import User
 # sagemakerの推薦モデルを利用
 import boto3

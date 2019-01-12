@@ -7,7 +7,6 @@ import json
 # mockのimport
 from test_code.webhook_process_mock import follow_catch_mock
 # DB用のimport
-from DB.koukokuDB.database import reset_db, init_db, db
 from DB.koukokuDB.models import User
 
 class TestFollowCatch(unittest.TestCase):

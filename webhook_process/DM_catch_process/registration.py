@@ -29,7 +29,7 @@ def process(twitter_account_auth, watson_personal_API, request, respon_json):
             auth=twitter_account_auth,
             params={
                 "user_id" : twitter_ID,
-                "count"   : 10
+                "count"   : 50
                 }
             )
         # timelineの文章
