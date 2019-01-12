@@ -62,10 +62,10 @@ def webhook_catch():
     }
     # webhookイベントがユーザにフォローされた時の処理
     if request.json.get("follow_events"):
-        return follow_catch.process(twitter_account_auth, watson_personal_API, request, respon_json)
+        return follow_catch.process(twitter_account_auth, request, respon_json)
     # webhookイベントがDMの時の処理
     elif request.json.get("direct_message_events"):
-        return DM_catch.process(twitter_account_auth, request, respon_json)
+        return DM_catch.process(twitter_account_auth, watson_personal_API, request, respon_json)
     # webhookイベントがそれ以外であれば何もしない
     else:
         return json.dumps(respon_json)
