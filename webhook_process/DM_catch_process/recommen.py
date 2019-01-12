@@ -21,7 +21,7 @@ import hashlib
 
 def process(twitter_account_auth, request, respon_json):
     # DMを送ったユーザの情報をDBから取得
-    twitter_ID = request.json["follow_events"][0]["message_create"]["sender_id"]
+    twitter_ID = request.json["direct_message_events"][0]["message_create"]["sender_id"]
     user = db.session.query(User).filter_by(
         twitter_userid_hash=hashlib.sha1(bytearray(twitter_ID, 'UTF-8')).hexdigest()
         ).first()
