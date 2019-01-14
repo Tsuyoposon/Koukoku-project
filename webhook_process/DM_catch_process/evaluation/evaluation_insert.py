@@ -41,9 +41,11 @@ def evaluation_insert(twitter_account_auth, request, respon_json):
             s3_upload.process()
             update_model.process()
             respon_json["Update_model"] = "OK"
-
-        respon_json["DM"] = "evaluation insert DM"
-        return json.dumps(respon_json)
+            respon_json["DM"] = "evaluation insert DM"
+            return json.dumps(respon_json)
+        else:
+            respon_json["DM"] = "evaluation insert DM"
+            return json.dumps(respon_json)
 
     else:
         check_feedback.feedback = hyouka
