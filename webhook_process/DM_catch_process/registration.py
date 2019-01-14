@@ -23,20 +23,32 @@ def process(twitter_account_auth, watson_personal_API, request, respon_json):
     twitter_ID_hash = hashlib.sha1(bytearray(twitter_ID, 'UTF-8')).hexdigest()
     check_user = User.query.filter_by(twitter_userid_hash=twitter_ID_hash).first()
     if check_user is None:
-        # 相手のツイート10件を取得
+        # 相手のツイート50件を取得
         DM_user_timeline = requests.get(
             "https://api.twitter.com/1.1/statuses/user_timeline.json",
             auth=twitter_account_auth,
             params={
                 "user_id" : twitter_ID,
                 "count"   : 50
-                }
-            )
+            }
+        )
+        # もしツイートを取得する許可がないなら(相互フォローしていない)
+        if "error" in DM_user_timeline.json():
+            # フォローを許可する様に警告
+            sent_DM("このアカウントに対してフォローをしてください(相互フォロー状態でないとツイートが取得できません)", twitter_ID, twitter_account_auth)
+            respon_json["New User"] = "NO"
+            return json.dumps(respon_json)
+
         # timelineの文章
         DM_user_linked_timeline = ""
         for DM_user_tweet in DM_user_timeline.json():
             DM_user_linked_timeline += DM_user_tweet["text"]
-        # watsonにツイート10件を送る
+        if len(DM_user_linked_timeline) < 100:
+            # 「登録ができない」DMを送信
+            sent_DM("ツイート文字数が少ないため登録できません", twitter_ID, twitter_account_auth)
+            respon_json["New User"] = "NO"
+            return json.dumps(respon_json)
+        # watsonにツイート50件を送る
         watson_renponse = watson_personal_API.profile(
             DM_user_linked_timeline,
             content_type="text/plain",
@@ -46,13 +58,43 @@ def process(twitter_account_auth, watson_personal_API, request, respon_json):
         # フォローしたユーザの性格情報をいれる
         insert_user(watson_renponse, twitter_ID)
 
+        # 「登録完了」DMを送信
+        sent_DM("登録が完了しました", twitter_ID, twitter_account_auth)
+        # もしツイート文字数が「15文字×50ツイート=750文字」以下であれば警告
+        if len(DM_user_linked_timeline) < 750:
+            # 「登録完了」DMを送信
+            sent_DM("※ツイート文字数が少なかったため、正確な推薦結果が出ない可能性があります", twitter_ID, twitter_account_auth)
         # ”ユーザ情報をDBに書き込んだ”という返信
         respon_json["New User"] = "OK"
         return json.dumps(respon_json)
     else:
+        # 「登録済み」DMを送信
+        sent_DM("すでに登録済みです", twitter_ID, twitter_account_auth)
         # ”ユーザ情報を書き込んでいない”という返信
         respon_json["New User"] = "NO"
         return json.dumps(respon_json)
+
+
+# 分割した関数
+def sent_DM(sent_text, sent_userID, twitter_account_auth):
+    DM_sent_body = {
+        "event": {
+            "type": "message_create",
+            "message_create": {
+                "target": {
+                    "recipient_id": sent_userID
+                },
+                "message_data": {
+                    "text": sent_text
+                }
+            }
+        }
+    }
+    response = requests.post(
+        "https://api.twitter.com/1.1/direct_messages/events/new.json",
+        auth=twitter_account_auth,
+        data=json.dumps(DM_sent_body)
+    )
 
 def insert_user(watson_renponse, twitter_ID):
     user = User(
