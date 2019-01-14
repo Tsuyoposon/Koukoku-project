@@ -29,7 +29,7 @@ def process(twitter_account_auth, request, respon_json):
     # boto3でsagemakerのクライアントを作成
     client = boto3.client('sagemaker-runtime')
     boto3_response = client.invoke_endpoint(
-        EndpointName='koukoku-recommen-endpoint',
+        EndpointName='tensorflow-poster-endpoint',
         Body=user_byte_data.encode(),
         ContentType='text/csv',
         Accept='application/json'
@@ -81,6 +81,6 @@ def recommen_sort(boto3_response):
         recommen_sent_string = "「推薦結果」\n"
     for i in range(5):
         recommen_item = recommen_items[int(recommen_sort_result[i]['label'])]
-        recommen_sent_string += recommen_item.recommen_item_name + "\n"
+        recommen_sent_string += "「" + chr(ord("①")+i) + recommen_item.recommen_item_name + "」\n"
 
     return recommen_sent_string
