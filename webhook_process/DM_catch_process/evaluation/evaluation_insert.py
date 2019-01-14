@@ -35,6 +35,25 @@ def evaluation_insert(twitter_account_auth, request, respon_json):
         insert_feedback = Feedback(user.id, select_item, hyouka)
         db.session.add(insert_feedback)
         db.session.commit()
+        # 「評価完了」DMを送信
+        DM_sent_body = {
+            "event": {
+                "type": "message_create",
+                "message_create": {
+                    "target": {
+                        "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
+                    },
+                    "message_data": {
+                        "text": "評価ありがとうございます"
+                    }
+                }
+            }
+        }
+        response = requests.post(
+            "https://api.twitter.com/1.1/direct_messages/events/new.json",
+            auth=twitter_account_auth,
+            data=json.dumps(DM_sent_body)
+        )
         # 10件評価が溜まったらモデル更新
         feedbacks = Feedback.query.all()
         if len(feedbacks) % 10 == 0:
@@ -51,6 +70,24 @@ def evaluation_insert(twitter_account_auth, request, respon_json):
         check_feedback.feedback = hyouka
         db.session.add(check_feedback)
         db.session.commit()
-
+        # 「評価完了」DMを送信
+        DM_sent_body = {
+            "event": {
+                "type": "message_create",
+                "message_create": {
+                    "target": {
+                        "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
+                    },
+                    "message_data": {
+                        "text": "評価内容を更新しました"
+                    }
+                }
+            }
+        }
+        response = requests.post(
+            "https://api.twitter.com/1.1/direct_messages/events/new.json",
+            auth=twitter_account_auth,
+            data=json.dumps(DM_sent_body)
+        )
         respon_json["DM"] = "evaluation update DM"
         return json.dumps(respon_json)

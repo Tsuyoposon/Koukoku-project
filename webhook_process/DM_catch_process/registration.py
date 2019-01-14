@@ -46,10 +46,48 @@ def process(twitter_account_auth, watson_personal_API, request, respon_json):
         # フォローしたユーザの性格情報をいれる
         insert_user(watson_renponse, twitter_ID)
 
+        # 「登録完了」DMを送信
+        DM_sent_body = {
+            "event": {
+                "type": "message_create",
+                "message_create": {
+                    "target": {
+                        "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
+                    },
+                    "message_data": {
+                        "text": "登録が完了しました"
+                    }
+                }
+            }
+        }
+        response = requests.post(
+            "https://api.twitter.com/1.1/direct_messages/events/new.json",
+            auth=twitter_account_auth,
+            data=json.dumps(DM_sent_body)
+        )
         # ”ユーザ情報をDBに書き込んだ”という返信
         respon_json["New User"] = "OK"
         return json.dumps(respon_json)
     else:
+        # 「登録済み」DMを送信
+        DM_sent_body = {
+            "event": {
+                "type": "message_create",
+                "message_create": {
+                    "target": {
+                        "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
+                    },
+                    "message_data": {
+                        "text": "すでに登録済みです"
+                    }
+                }
+            }
+        }
+        response = requests.post(
+            "https://api.twitter.com/1.1/direct_messages/events/new.json",
+            auth=twitter_account_auth,
+            data=json.dumps(DM_sent_body)
+        )
         # ”ユーザ情報を書き込んでいない”という返信
         respon_json["New User"] = "NO"
         return json.dumps(respon_json)
