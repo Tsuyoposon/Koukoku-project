@@ -25,6 +25,13 @@ def process(twitter_account_auth, request, respon_json):
     user = db.session.query(User).filter_by(
         twitter_userid_hash=hashlib.sha1(bytearray(twitter_ID, 'UTF-8')).hexdigest()
         ).first()
+    # もしユーザが見つからなかったら
+    if user is None:
+        sent_DM("「登録」が完了していません", twitter_ID, twitter_account_auth)
+        # 推薦ができなかった
+        respon_json["DM"] = "Not Recommen DM"
+        return json.dumps(respon_json)
+
     user_byte_data = user.all_params()
     # boto3でsagemakerのクライアントを作成
     client = boto3.client('sagemaker-runtime')
@@ -38,15 +45,23 @@ def process(twitter_account_auth, request, respon_json):
     recommen_sent_string = recommen_sort(boto3_response['Body'])
 
     # 上位5件をDMで送信
+    sent_DM(recommen_sent_string, twitter_ID, twitter_account_auth)
+    # 推薦ができた
+    respon_json["DM"] = "Recommen DM"
+    return json.dumps(respon_json)
+
+
+# 分割した関数
+def sent_DM(sent_text, sent_userID, twitter_account_auth):
     DM_sent_body = {
         "event": {
             "type": "message_create",
             "message_create": {
                 "target": {
-                    "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
+                    "recipient_id": sent_userID
                 },
                 "message_data": {
-                    "text": recommen_sent_string
+                    "text": sent_text
                 }
             }
         }
@@ -56,15 +71,6 @@ def process(twitter_account_auth, request, respon_json):
         auth=twitter_account_auth,
         data=json.dumps(DM_sent_body)
     )
-    if response.status_code == 200:
-        # DMが返信できた
-        respon_json["DM"] = "Recommen DM"
-        return json.dumps(respon_json)
-    else:
-        # DMが返信できなかった
-        respon_json["DM"] = "Not Recommen DM"
-        return json.dumps(respon_json)
-
 
 def recommen_sort(boto3_response):
     # 推薦結果をソート
