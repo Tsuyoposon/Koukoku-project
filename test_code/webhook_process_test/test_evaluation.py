@@ -45,8 +45,8 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
 
-    # 「評価結果のquick-replies」メッセージが来た時の動作を確認
-    def test_evaluation_hyouka(self):
+    # 「評価結果のquick-replies」メッセージが来た時(1回目)の動作を確認
+    def test_evaluation_hyouka_1(self):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
@@ -81,8 +81,46 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
 
+    # 「評価結果のquick-replies」メッセージが来た時(2回目)の動作を確認
+    def test_evaluation_hyouka_2(self):
+        # DMがきた時のjsonをロード
+        with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
+            DM_event_json = json.load(DM_event_json_file)
+            DM_event_json["direct_message_events"][0]["message_create"]["sender_id"] = os.environ['TEST_ACCOUNT_ID']
+            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = "0,hyouka-2"
+        # twitterからのDMイベントのAPIを再現
+        response = self.app.post(
+            "/webhooks/twitter",
+            content_type='application/json',
+            data=json.dumps(DM_event_json)
+        )
+
+        # update結果の照合
+        app = Flask(__name__)
+        app.config.from_object('DB.koukokuDB.config.Config')
+        init_db(app)
+        with app.app_context():
+            feedback = Feedback.query.get(1)
+            feedbacks = Feedback.query.all()
+        self.assertEqual(feedback.user_id, 1)
+        self.assertEqual(feedback.recommen_item_id, 1)
+        self.assertEqual(feedback.feedback, 2)
+        self.assertEqual(len(feedbacks), 1)
+
+        # レスポンス結果の再現
+        response_body = {
+            "DM"           : "evaluation update DM",
+            "New User"     : "",
+            "Follow"       : "",
+            "Update_model" : ""
+        }
+        response_body_encode = json.dumps(response_body).encode()
+        # レスポンス結果のの照合
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, response_body_encode)
+
     # 「取り消し」メッセージが来た時の動作を確認
-    def test_evaluation(self):
+    def test_evaluation_cancel(self):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)

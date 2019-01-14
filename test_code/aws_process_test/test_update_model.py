@@ -21,14 +21,15 @@ class TestUpdateModel(unittest.TestCase):
     # 10件評価が来た時に推薦モデルを更新する
     @mock.patch('boto3.resource', side_effect=update_model_mock.boto3_resource)
     @mock.patch('aws_process.update_model.process', side_effect=update_model_mock.mocked_update_model)
-    def test_evaluation_hyouka(self, mock_boto3, mock_update_model):
+    def test_model_update(self, mock_boto3, mock_update_model):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
             DM_event_json["direct_message_events"][0]["message_create"]["sender_id"] = os.environ['TEST_ACCOUNT_ID']
             DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = "0,hyouka-1"
         # twitterからのDMイベントのAPIを再現(9回)
-        for i in range(9):
+        for i in range(10):
+            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = str(i) + ",hyouka-1"
             response = self.app.post(
                 "/webhooks/twitter",
                 content_type='application/json',
