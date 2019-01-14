@@ -2,6 +2,8 @@ python -m unittest test_code.webhook_process_test.test_before -v
 
 python -m unittest test_code.webhook_process_test.test_follow_catch -v
 
+python -m unittest test_code.webhook_process_test.test_DM_catch_error -v
+
 python -m unittest test_code.webhook_process_test.test_DM_catch -v
 
 python -m unittest test_code.webhook_process_test.test_evaluation -v
