@@ -13,6 +13,10 @@ def mocked_twitter_API(*args, **kwargs):
     # DMを送る時のrequest(POST)
     if args[0] == "https://api.twitter.com/1.1/direct_messages/events/new.json":
         catch_json = json.loads(kwargs["data"])
+        # 警告メッセージが届いた時
+        if catch_json["event"]["message_create"]["target"]["recipient_id"] == os.environ['TEST_ACCOUNT_ID'] and \
+        catch_json["event"]["message_create"]["message_data"]["text"] is not None:
+            return MockResponse({}, 200)
         # 推薦結果を送る時
         sent_message = "1-A19 AmbientLetter：わからないスペルをこっそり知るための筆記検出および文字提示手法\n"\
             "1-A04 ニオイセンサーによるニオイの可視化と官能試験との相関性\n"\
@@ -55,7 +59,7 @@ def mocked_watson_API(*args, **kwargs):
             self.status_code = status_code
         def json(self):
             return self.json_data
-    if args[0] == "こんばんは":
+    if args[0] == "こんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんはこんばんは":
         with open("test_code/test_json/watson_result.json", "r") as watson_result_json_file:
             watson_result_json = json.load(watson_result_json_file)
         return watson_result_json
