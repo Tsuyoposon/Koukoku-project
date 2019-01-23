@@ -13,19 +13,9 @@ def evaluation_sent(twitter_account_auth, request, respon_json):
     select_item = request.json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"]
     reply_list = [
         {
-            "label"       : "1",
-            "description" : "とてもつまらない",
-            "metadata"    : select_item + ",hyouka-1"
-        },
-        {
-            "label"       : "2",
-            "description" : "つまらない",
-            "metadata"    : select_item + ",hyouka-2"
-        },
-        {
-            "label"       : "3",
-            "description" : "普通",
-            "metadata"    : select_item + ",hyouka-3"
+            "label"       : "5",
+            "description" : "とても良かった",
+            "metadata"    : select_item + ",hyouka-5"
         },
         {
             "label"       : "4",
@@ -33,9 +23,19 @@ def evaluation_sent(twitter_account_auth, request, respon_json):
             "metadata"    : select_item + ",hyouka-4"
         },
         {
-            "label"       : "5",
-            "description" : "とても良かった",
-            "metadata"    : select_item + ",hyouka-5"
+            "label"       : "3",
+            "description" : "普通",
+            "metadata"    : select_item + ",hyouka-3"
+        },
+        {
+            "label"       : "2",
+            "description" : "つまらない",
+            "metadata"    : select_item + ",hyouka-2"
+        },
+        {
+            "label"       : "1",
+            "description" : "とてもつまらない",
+            "metadata"    : select_item + ",hyouka-1"
         },
         {
             "label"       : "取り消し",
