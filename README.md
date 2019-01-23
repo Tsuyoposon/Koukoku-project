@@ -11,6 +11,7 @@
 ## プロジェクト概要
 
 [ポスター版](https://imgur.com/a/RPND3dP)
+
 [利用説明書](https://speakerdeck.com/tsuyoposon/li-yong-shuo-ming-shu?slide=9)
 
 **①ポスターセッション**のように時間が限られているイベントでは、全てのセッションを聴けない  
