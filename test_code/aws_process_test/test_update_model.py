@@ -21,7 +21,8 @@ class TestUpdateModel(unittest.TestCase):
     # 10件評価が来た時に推薦モデルを更新する
     @mock.patch('boto3.resource', side_effect=update_model_mock.boto3_resource)
     @mock.patch('aws_process.update_model.process', side_effect=update_model_mock.mocked_update_model)
-    def test_model_update(self, mock_boto3, mock_update_model):
+    @mock.patch('requests.post', side_effect=update_model_mock.mocked_twitter_API)
+    def test_model_update(self, mock_boto3, mock_update_model, mock_post):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)

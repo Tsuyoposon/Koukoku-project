@@ -46,7 +46,8 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(response.data, response_body_encode)
 
     # 「評価結果のquick-replies」メッセージが来た時(1回目)の動作を確認
-    def test_evaluation_hyouka_1(self):
+    @mock.patch('requests.post', side_effect=evaluation_mock.mocked_twitter_API)
+    def test_evaluation_hyouka_1(self, mock_post):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)
@@ -82,7 +83,8 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(response.data, response_body_encode)
 
     # 「評価結果のquick-replies」メッセージが来た時(2回目)の動作を確認
-    def test_evaluation_hyouka_2(self):
+    @mock.patch('requests.post', side_effect=evaluation_mock.mocked_twitter_API)
+    def test_evaluation_hyouka_2(self, mock_post):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)

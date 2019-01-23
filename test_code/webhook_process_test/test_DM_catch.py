@@ -116,7 +116,8 @@ class TestDMCatch(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, response_body_encode)
     # DMが来た時の動作を確認
-    def test_twitter_DM_4(self):
+    @mock.patch('requests.post', side_effect=DM_catch_mock.mocked_twitter_API)
+    def test_twitter_DM_4(self, mock_post):
         # DMがきた時のjsonをロード
         with open("test_code/test_json/direct_message_events.json", "r") as DM_event_json_file:
             DM_event_json = json.load(DM_event_json_file)

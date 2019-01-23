@@ -13,6 +13,10 @@ def mocked_twitter_API(*args, **kwargs):
     # DMを送る時のrequest(POST)
     if args[0] == "https://api.twitter.com/1.1/direct_messages/events/new.json":
         catch_json = json.loads(kwargs["data"])
+        # 警告メッセージが届いた時
+        if catch_json["event"]["message_create"]["target"]["recipient_id"] == os.environ['TEST_ACCOUNT_ID'] and \
+        catch_json["event"]["message_create"]["message_data"]["text"] is not None:
+            return MockResponse({}, 200)
         # quick-replies(推薦アイテム)を送信する時
         sent_first_description = "とてもつまらない"
         if catch_json["event"]["message_create"]["target"]["recipient_id"] == os.environ['TEST_ACCOUNT_ID'] and \
