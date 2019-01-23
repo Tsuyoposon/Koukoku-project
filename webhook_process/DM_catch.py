@@ -6,7 +6,7 @@
 #                                      |- quick_replyイベント --- 「取り消し」が選択された (何もしない)
 #                                      |                      |- 推薦アイテムの選択結果 (評価のquick_replyを送信)
 #                                      |                      |- 評価の選択結果 (結果をinsert)
-#                                      |- その他DM(何もしない)
+#                                      |- その他DM(アラートメッセージ)
 
 
 # API処理用
@@ -18,6 +18,8 @@ from webhook_process.DM_catch_process import registration
 from webhook_process.DM_catch_process import recommen
 # 「評価」処理関数
 from webhook_process.DM_catch_process import evaluation
+# 「その他」処理関数
+from webhook_process.DM_catch_process import else_DM
 
 
 # DMをもらった時
@@ -50,7 +52,5 @@ def process(twitter_account_auth, watson_personal_API, request, respon_json):
                 # 評価の選択結果 (結果をinsert)
                 return evaluation.evaluation_insert(twitter_account_auth, request, respon_json)
         else:
-            # その他DM(何もしない)
-            print(json.dumps(request.json, indent=2))
-            respon_json["DM"] = "else DM event"
-            return json.dumps(respon_json)
+            # その他DM(アラートメッセージ)
+            return else_DM.process(twitter_account_auth, request, respon_json)
