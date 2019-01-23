@@ -59,7 +59,7 @@ def process(twitter_account_auth, watson_personal_API, request, respon_json):
         insert_user(watson_renponse, twitter_ID)
 
         # 「登録完了」DMを送信
-        sent_DM("登録が完了しました", twitter_ID, twitter_account_auth)
+        sent_DM("登録が完了しました\n「推薦」「評価」と入力してシステムを利用してください", twitter_ID, twitter_account_auth)
         # もしツイート文字数が「15文字×50ツイート=750文字」以下であれば警告
         if len(DM_user_linked_timeline) < 750:
             # 「登録完了」DMを送信
