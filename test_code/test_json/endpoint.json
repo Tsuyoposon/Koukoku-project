@@ -1,0 +1,11 @@
+{
+	"Endpoints": [
+		{
+			"EndpointName": "tensorflow-poster-endpoint",
+			"EndpointArn": "",
+			"CreationTime": 0,
+			"LastModifiedTime": 0,
+			"EndpointStatus": "InService"
+		}
+	]
+}

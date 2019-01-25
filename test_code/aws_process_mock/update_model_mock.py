@@ -1,6 +1,8 @@
 from unittest import mock
 import json, os
 from io import StringIO
+import datetime
+from pytz import timezone, utc
 
 # mocked_update_modelの動作を再現
 def mocked_update_model():
@@ -15,7 +17,14 @@ def boto3_resource(*args, **kwargs):
             if args[0] == os.environ['BUCKET_NAME']:
                 return MockUploadFile
             return None
+        def list_endpoints(*args, **kwargs):
+            with open("test_code/test_json/endpoint.json", "r") as endpoint_json_file:
+                endpoint_json = json.load(endpoint_json_file)
+            endpoint_json["Endpoints"][0]["LastModifiedTime"] = datetime.datetime(2019, 1, 25, 5, 13, 30, 29000, timezone('UTC'))
+            return endpoint_json
     if args[0] == "s3":
+        return MockBucket
+    elif args[0] == "sagemaker":
         return MockBucket
     return None
 
