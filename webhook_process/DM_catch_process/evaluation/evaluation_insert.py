@@ -15,6 +15,10 @@ import hashlib
 # s3_upload関数
 from aws_process import s3_upload
 from aws_process import update_model
+# AWS関連
+import boto3
+import datetime
+from pytz import timezone
 
 
 def evaluation_insert(twitter_account_auth, request, respon_json):
@@ -29,6 +33,7 @@ def evaluation_insert(twitter_account_auth, request, respon_json):
     evaluation_data = select_item_hyouka.split(',')
     select_item = int(evaluation_data[0]) + 1
     hyouka = int(evaluation_data[1][-1])
+
     # 評価結果をinsert(同じアイテムを評価したらupdate)
     check_feedback = Feedback.query.filter_by(user_id=user.id, recommen_item_id=select_item).first()
     if check_feedback is None:
@@ -36,58 +41,56 @@ def evaluation_insert(twitter_account_auth, request, respon_json):
         db.session.add(insert_feedback)
         db.session.commit()
         # 「評価完了」DMを送信
-        DM_sent_body = {
-            "event": {
-                "type": "message_create",
-                "message_create": {
-                    "target": {
-                        "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
-                    },
-                    "message_data": {
-                        "text": "評価ありがとうございます"
-                    }
-                }
-            }
-        }
-        response = requests.post(
-            "https://api.twitter.com/1.1/direct_messages/events/new.json",
-            auth=twitter_account_auth,
-            data=json.dumps(DM_sent_body)
-        )
-        # 10件評価が溜まったらモデル更新
+        sent_DM("評価ありがとうございます", twitter_ID, twitter_account_auth)
+
+        #評価が10件たまったら
         feedbacks = Feedback.query.all()
         if len(feedbacks) % 10 == 0:
-            s3_upload.process()
-            update_model.process()
-            respon_json["Update_model"] = "OK"
-            respon_json["DM"] = "evaluation insert DM"
-            return json.dumps(respon_json)
+            # エンドポイントの状態を取得して、現在とのタイムラグを取得
+            client = boto3.client('sagemaker')
+            response_endpoint = client.list_endpoints(
+                MaxResults=1,
+                NameContains='tensorflow-poster-endpoint',
+            )
+            time_lag = datetime.datetime.now(timezone('UTC')) - response_endpoint["Endpoints"][0]["LastModifiedTime"]
+            # タイムラグが10分以下であれば or 最初の10件だった時
+            print(time_lag)
+            if datetime.timedelta(minutes=10) < time_lag or len(feedbacks) == 10:
+                s3_upload.process()
+                update_model.process()
+                respon_json["Update_model"] = "OK"
+                respon_json["DM"] = "evaluation insert DM"
+                return json.dumps(respon_json)
         else:
             respon_json["DM"] = "evaluation insert DM"
             return json.dumps(respon_json)
-
     else:
         check_feedback.feedback = hyouka
         db.session.add(check_feedback)
         db.session.commit()
         # 「評価完了」DMを送信
-        DM_sent_body = {
-            "event": {
-                "type": "message_create",
-                "message_create": {
-                    "target": {
-                        "recipient_id": request.json["direct_message_events"][0]["message_create"]["sender_id"]
-                    },
-                    "message_data": {
-                        "text": "評価内容を更新しました"
-                    }
+        sent_DM("評価内容を更新しました", twitter_ID, twitter_account_auth)
+
+        respon_json["DM"] = "evaluation update DM"
+        return json.dumps(respon_json)
+
+# 分割した関数
+def sent_DM(sent_text, sent_userID, twitter_account_auth):
+    DM_sent_body = {
+        "event": {
+            "type": "message_create",
+            "message_create": {
+                "target": {
+                    "recipient_id": sent_userID
+                },
+                "message_data": {
+                    "text": sent_text
                 }
             }
         }
-        response = requests.post(
-            "https://api.twitter.com/1.1/direct_messages/events/new.json",
-            auth=twitter_account_auth,
-            data=json.dumps(DM_sent_body)
-        )
-        respon_json["DM"] = "evaluation update DM"
-        return json.dumps(respon_json)
+    }
+    response = requests.post(
+        "https://api.twitter.com/1.1/direct_messages/events/new.json",
+        auth=twitter_account_auth,
+        data=json.dumps(DM_sent_body)
+    )
