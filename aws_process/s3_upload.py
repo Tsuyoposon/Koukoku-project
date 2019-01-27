@@ -29,47 +29,49 @@ def process():
 
         # データ書き込み
         for i in range(len(feedbacks)):
+            this_feedback_user_params = feedbacks[i].user.all_params_list()
             # 評価によってラベルをつける
             if feedbacks[i].feedback == 5:
                 # 5の時、そのポスターを4回学習させる
+                data_list = this_feedback_user_params[:]
+                data_list.append(feedbacks[i].recommen_item_id - 1)
                 for j in range(4):
-                    data_list = feedbacks[i].user.all_params_list()
-                    data_list.append(feedbacks[i].recommen_item_id - 1)
                     writer.writerow(data_list)
             elif feedbacks[i].feedback == 4:
                 # 4の時、そのポスターを2回学習させる
+                data_list = this_feedback_user_params[:]
+                data_list.append(feedbacks[i].recommen_item_id - 1)
                 for j in range(2):
-                    data_list = feedbacks[i].user.all_params_list()
-                    data_list.append(feedbacks[i].recommen_item_id - 1)
                     writer.writerow(data_list)
             elif feedbacks[i].feedback == 3:
-                # 3の時、そのポスターを1回、それ以外を3回学習させる
-                data_list = feedbacks[i].user.all_params_list()
+                # 3の時、そのポスターを1回、
+                data_list = this_feedback_user_params[:]
                 data_list.append(feedbacks[i].recommen_item_id - 1)
                 writer.writerow(data_list)
-                recommen_items_del = Recommen_item.query.all()
+                # それ以外を3回学習させる
+                recommen_items_del = recommen_items[:]
                 del recommen_items_del[feedbacks[i].recommen_item_id - 1]
                 choice_item = random.sample(recommen_items_del, 3)
                 for j in range(3):
-                    data_list = feedbacks[i].user.all_params_list()
+                    data_list = this_feedback_user_params[:]
                     data_list.append(choice_item[j].id - 1)
                     writer.writerow(data_list)
             elif feedbacks[i].feedback == 2:
                 # 2の時、そのポスターを4回
-                recommen_items_del = Recommen_item.query.all()
+                recommen_items_del = recommen_items[:]
                 del recommen_items_del[feedbacks[i].recommen_item_id - 1]
                 choice_item = random.sample(recommen_items_del, 4)
                 for j in range(4):
-                    data_list = feedbacks[i].user.all_params_list()
+                    data_list = this_feedback_user_params[:]
                     data_list.append(choice_item[j].id - 1)
                     writer.writerow(data_list)
             elif feedbacks[i].feedback == 1:
                 # 1の時、そのポスターを8回
-                recommen_items_del = Recommen_item.query.all()
+                recommen_items_del = recommen_items[:]
                 del recommen_items_del[feedbacks[i].recommen_item_id - 1]
                 choice_item = random.sample(recommen_items_del, 8)
                 for j in range(8):
-                    data_list = feedbacks[i].user.all_params_list()
+                    data_list = this_feedback_user_params[:]
                     data_list.append(choice_item[j].id - 1)
                     writer.writerow(data_list)
 
