@@ -10,6 +10,8 @@ from DB.koukokuDB.database import db
 import csv
 # AWS関連
 import boto3
+# 乱数
+import random
 
 def process():
     # データのロード
@@ -27,10 +29,49 @@ def process():
 
         # データ書き込み
         for i in range(len(feedbacks)):
-            # 性格データ(52種類) + 評価アイテムid
-            data_list = feedbacks[i].user.all_params_list()
-            data_list.append(feedbacks[i].recommen_item_id - 1)
-            writer.writerow(data_list)
+            # 評価によってラベルをつける
+            if feedbacks[i].feedback == 5:
+                # 5の時、そのポスターを4回学習させる
+                for j in range(4):
+                    data_list = feedbacks[i].user.all_params_list()
+                    data_list.append(feedbacks[i].recommen_item_id - 1)
+                    writer.writerow(data_list)
+            elif feedbacks[i].feedback == 4:
+                # 4の時、そのポスターを2回学習させる
+                for j in range(2):
+                    data_list = feedbacks[i].user.all_params_list()
+                    data_list.append(feedbacks[i].recommen_item_id - 1)
+                    writer.writerow(data_list)
+            elif feedbacks[i].feedback == 3:
+                # 3の時、そのポスターを1回、それ以外を3回学習させる
+                data_list = feedbacks[i].user.all_params_list()
+                data_list.append(feedbacks[i].recommen_item_id - 1)
+                writer.writerow(data_list)
+                recommen_items_del = Recommen_item.query.all()
+                del recommen_items_del[feedbacks[i].recommen_item_id - 1]
+                choice_item = random.sample(recommen_items_del, 3)
+                for j in range(3):
+                    data_list = feedbacks[i].user.all_params_list()
+                    data_list.append(choice_item[j].id - 1)
+                    writer.writerow(data_list)
+            elif feedbacks[i].feedback == 2:
+                # 2の時、そのポスターを4回
+                recommen_items_del = Recommen_item.query.all()
+                del recommen_items_del[feedbacks[i].recommen_item_id - 1]
+                choice_item = random.sample(recommen_items_del, 4)
+                for j in range(4):
+                    data_list = feedbacks[i].user.all_params_list()
+                    data_list.append(choice_item[j].id - 1)
+                    writer.writerow(data_list)
+            elif feedbacks[i].feedback == 1:
+                # 1の時、そのポスターを8回
+                recommen_items_del = Recommen_item.query.all()
+                del recommen_items_del[feedbacks[i].recommen_item_id - 1]
+                choice_item = random.sample(recommen_items_del, 8)
+                for j in range(8):
+                    data_list = feedbacks[i].user.all_params_list()
+                    data_list.append(choice_item[j].id - 1)
+                    writer.writerow(data_list)
 
     # s3 upload
     s3 = boto3.resource('s3')
