@@ -76,6 +76,10 @@ def process():
                     data_list.append(choice_item[j].id - 1)
                     writer.writerow(data_list)
 
+    # s3 upload
+    s3 = boto3.resource('s3')
+    bucket = s3.Bucket(os.environ['BUCKET_NAME'])
+    bucket.upload_file('feedbacks_traning.csv', 'feedbacks_data/feedbacks_traning.csv')
     # 評価結果書き込み(50件に1回)
     if len(recommen_items) % 50 == 0:
         with open('feedbacks_table.csv', 'w') as table_data_csv:
@@ -89,9 +93,4 @@ def process():
                 data_list.append(feedbacks[i].created_at)
                 data_list.append(feedbacks[i].updated_at)
                 writer.writerow(data_list)
-
-    # s3 upload
-    s3 = boto3.resource('s3')
-    bucket = s3.Bucket(os.environ['BUCKET_NAME'])
-    bucket.upload_file('feedbacks_traning.csv', 'feedbacks_data/feedbacks_traning.csv')
-    bucket.upload_file('feedbacks_table.csv', 'feedbacks_table_data/feedbacks_table' + str(datetime.datetime.now()) + '.csv')
+        bucket.upload_file('feedbacks_table.csv', 'feedbacks_table_data/feedbacks_table' + str(datetime.datetime.now()) + '.csv')
