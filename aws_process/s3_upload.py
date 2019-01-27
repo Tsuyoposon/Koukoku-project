@@ -18,7 +18,17 @@ def process():
     # データのロード
     feedbacks = Feedback.query.all()
     recommen_items = Recommen_item.query.all()
-    csv_header = [len(feedbacks), 52]
+
+    # ヘッダー情報の書き込み
+    rabel_number = 0
+    for i in range(len(feedbacks)):
+        if feedbacks[i].feedback == 4:
+            rabel_number += 2
+        elif feedbacks[i].feedback == 1:
+            rabel_number += 8
+        else:
+            rabel_number += 4
+    csv_header = [rabel_number, 52]
     for i in range(len(recommen_items)):
         csv_header.append(recommen_items[i].recommen_item_name)
 
