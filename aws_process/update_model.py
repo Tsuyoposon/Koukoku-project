@@ -27,7 +27,7 @@ def process():
 
     # notebookの画面
     driver.get(os.environ['AWS_NOTEBOOK_URL'])
-    time.sleep(10)
+    time.sleep(20)
     run_all_cell = driver.find_element_by_xpath('//*[@id="run_int"]/button[4]')
     run_all_cell.click()
     time.sleep(5)
