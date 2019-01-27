@@ -8,6 +8,7 @@ from DB.koukokuDB.models import Feedback
 from DB.koukokuDB.database import db
 # csv関連
 import csv
+import datetime
 # AWS関連
 import boto3
 # 乱数
@@ -21,7 +22,7 @@ def process():
     for i in range(len(recommen_items)):
         csv_header.append(recommen_items[i].recommen_item_name)
 
-    # 書き込み処理
+    # ラベルデータ書き込み処理
     with open('feedbacks_traning.csv', 'w') as data_csv_file:
         # ヘッダー書き込み
         writer = csv.writer(data_csv_file, lineterminator='\n')
@@ -75,7 +76,22 @@ def process():
                     data_list.append(choice_item[j].id - 1)
                     writer.writerow(data_list)
 
+    # 評価結果書き込み(50件に1回)
+    if len(recommen_items) % 50 == 0:
+        with open('feedbacks_table.csv', 'w') as table_data_csv:
+            writer = csv.writer(table_data_csv, lineterminator='\n')
+            # データ書き込み
+            for i in range(len(feedbacks)):
+                # 性格データ(52種類) + 評価アイテムid + 評価内容
+                data_list = feedbacks[i].user.all_params_list()
+                data_list.append(feedbacks[i].recommen_item_id - 1)
+                data_list.append(feedbacks[i].feedback)
+                data_list.append(feedbacks[i].created_at)
+                data_list.append(feedbacks[i].updated_at)
+                writer.writerow(data_list)
+
     # s3 upload
     s3 = boto3.resource('s3')
     bucket = s3.Bucket(os.environ['BUCKET_NAME'])
     bucket.upload_file('feedbacks_traning.csv', 'feedbacks_data/feedbacks_traning.csv')
+    bucket.upload_file('feedbacks_table.csv', 'feedbacks_table_data/feedbacks_table' + str(datetime.datetime.now()) + '.csv')
