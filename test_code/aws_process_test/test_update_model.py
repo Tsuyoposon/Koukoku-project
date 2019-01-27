@@ -31,7 +31,7 @@ class TestUpdateModel(unittest.TestCase):
             DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = "0,hyouka-1"
         # twitterからのDMイベントのAPIを再現(9回)
         for i in range(10):
-            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = str(i) + ",hyouka-1"
+            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = str(i) + ",hyouka-" + str(i%5+1)
             response = self.app.post(
                 "/webhooks/twitter",
                 content_type='application/json',
