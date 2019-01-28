@@ -3,7 +3,8 @@
 #           |- 利用者が送信したDMイベント --- 「登録」と送信された（ツイートを採取して性格情報を取得＆登録）
 #                                      |- 「推薦」と送信された (推薦結果表示)
 #                                      |- 「評価」と送信された (推薦アイテムのquick_replyを送信)
-#                                      |- quick_replyイベント --- 「取り消し」が選択された (何もしない)
+#                                      |- quick_replyイベント --- 「ポスター切り替え」が選択された (推薦アイテムのquick_replyを送信)
+#                                      |                      |- 「取り消し」が選択された (何もしない)
 #                                      |                      |- 推薦アイテムの選択結果 (評価のquick_replyを送信)
 #                                      |                      |- 評価の選択結果 (結果をinsert)
 #                                      |- その他DM(アラートメッセージ)
@@ -41,7 +42,10 @@ def process(twitter_account_auth, watson_personal_API, request, respon_json):
             return evaluation.item_sent(twitter_account_auth, request, respon_json)
         elif "quick_reply_response" in request.json["direct_message_events"][0]["message_create"]["message_data"]:
             # quick_replyイベント
-            if "cancel" == request.json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"]:
+            if "select" in request.json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"]:
+                # 「ポスター選択の切り替え」が選択された（後半 or 前半のポスターを表示）
+                return evaluation.item_sent(twitter_account_auth, request, respon_json)
+            elif "cancel" == request.json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"]:
                 # 「取り消し」が選択された (何もしない)
                 respon_json["DM"] = "evaluation cancel quick_reply"
                 return json.dumps(respon_json)
