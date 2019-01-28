@@ -51,7 +51,7 @@ class TestBefore(unittest.TestCase):
         # DB挿入結果の照会
         with app.app_context():
             recommen_item = Recommen_item.query.get(1)
-        self.assertEqual(recommen_item.recommen_item_name, "1-A02 ProtoHole: 穴と音響センシングを用いたインタラクティブな３Dプリントオブジェクトの提案")
+        self.assertEqual(recommen_item.recommen_item_name, "チーム王研 センチメント分析と機械学習を用いたレビュー信頼性に基づく分類システム")
 
 
 if __name__ == '__main__':
