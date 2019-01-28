@@ -35,7 +35,7 @@ def process(twitter_account_auth, watson_personal_API, request, respon_json):
         # もしツイートを取得する許可がないなら(相互フォローしていない)
         if "error" in DM_user_timeline.json():
             # フォローを許可する様に警告
-            sent_DM("このアカウントに対してフォローをしてください(相互フォロー状態でないとツイートが取得できません)", twitter_ID, twitter_account_auth)
+            sent_DM("このアカウントに対してフォローをしてください、システムがフォローを行うのでフォロー許可をお願いします\n(相互フォロー状態でないとツイートが取得できません)", twitter_ID, twitter_account_auth)
             respon_json["New User"] = "NO"
             return json.dumps(respon_json)
 
