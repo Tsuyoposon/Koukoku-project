@@ -42,7 +42,12 @@ class Recommen_item(db.Model):
                 Recommen_item(14, "1-A20 ポーチの型紙製作支援システム"),
                 Recommen_item(15, "1-A21 宿泊者のホテル内での動きの偏りに関して"),
                 Recommen_item(16, "1-A22 パッチワーク風キルト作成支援システム"),
-                Recommen_item(17, "1-A23 女性のためのシチュエーションドラマを利用した癒しシステム")
+                Recommen_item(17, "1-A23 女性のためのシチュエーションドラマを利用した癒しシステム"),
+                Recommen_item(18, "1-A24 女性のためのシチュエーションドラマを利用した癒しシステム"),
+                Recommen_item(19, "1-A25 女性のためのシチュエーションドラマを利用した癒しシステム"),
+                Recommen_item(20, "1-A26 女性のためのシチュエーションドラマを利用した癒しシステム"),
+                Recommen_item(21, "1-A27 女性のためのシチュエーションドラマを利用した癒しシステム"),
+                Recommen_item(22, "1-A28 女性のためのシチュエーションドラマを利用した癒しシステム")
             ]
             db.session.add_all(items)
             db.session.commit()

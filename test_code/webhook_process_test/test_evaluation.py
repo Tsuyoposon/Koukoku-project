@@ -18,6 +18,60 @@ class TestEvaluation(unittest.TestCase):
         app.config.from_object('DB.koukokuDB.config.Config')
         self.app = receve_api.app.test_client()
 
+    # 「選択アイテムの切り替え(後半を要求)」メッセージが来た時の動作を確認
+    @mock.patch('requests.post', side_effect=evaluation_mock.mocked_twitter_API)
+    def test_select_item_1(self, mock_post):
+        # DMがきた時のjsonをロード
+        with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
+            DM_event_json = json.load(DM_event_json_file)
+            DM_event_json["direct_message_events"][0]["message_create"]["sender_id"] = os.environ['TEST_ACCOUNT_ID']
+            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = "select_kouhann"
+        # twitterからのDMイベントのAPIを再現
+        response = self.app.post(
+            "/webhooks/twitter",
+            content_type='application/json',
+            data=json.dumps(DM_event_json)
+        )
+
+        # レスポンス結果の再現
+        response_body = {
+            "DM"           : "evaluation item_sent DM",
+            "New User"     : "",
+            "Follow"       : "",
+            "Update_model" : ""
+        }
+        response_body_encode = json.dumps(response_body).encode()
+        # レスポンス結果のの照合
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, response_body_encode)
+
+    # 「選択アイテムの切り替え(後半を要求)」メッセージが来た時の動作を確認
+    @mock.patch('requests.post', side_effect=evaluation_mock.mocked_twitter_API)
+    def test_select_item_1(self, mock_post):
+        # DMがきた時のjsonをロード
+        with open("test_code/test_json/quick_replies_item.json", "r") as DM_event_json_file:
+            DM_event_json = json.load(DM_event_json_file)
+            DM_event_json["direct_message_events"][0]["message_create"]["sender_id"] = os.environ['TEST_ACCOUNT_ID']
+            DM_event_json["direct_message_events"][0]["message_create"]["message_data"]["quick_reply_response"]["metadata"] = "select_zenhann"
+        # twitterからのDMイベントのAPIを再現
+        response = self.app.post(
+            "/webhooks/twitter",
+            content_type='application/json',
+            data=json.dumps(DM_event_json)
+        )
+
+        # レスポンス結果の再現
+        response_body = {
+            "DM"           : "evaluation item_sent DM",
+            "New User"     : "",
+            "Follow"       : "",
+            "Update_model" : ""
+        }
+        response_body_encode = json.dumps(response_body).encode()
+        # レスポンス結果のの照合
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, response_body_encode)
+
     # 「選択アイテムのquick-replies」メッセージが来た時の動作を確認
     @mock.patch('requests.post', side_effect=evaluation_mock.mocked_twitter_API)
     def test_evaluation_item(self, mock_post):
