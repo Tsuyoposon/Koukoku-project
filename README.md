@@ -1,7 +1,7 @@
 # Koukoku-project
 
 ## プロジェクト開発リンク
-- [Project](https://github.com/Tsuyoposon/Koukoku-project/projects)
+- [Project](https://github.com/Tsuyoposon/Koukoku-project/projects) **wikiとかよりこっちをよく見て欲しい**
     - 開発スケージュール＆やることリスト
 - [wiki](https://github.com/Tsuyoposon/Koukoku-project/wiki)
     - 開発フロー＆ルールの定義
