@@ -59,7 +59,7 @@ service-identity==17.0.0
 six==1.11.0
 SQLAlchemy==1.2.9
 texttable==0.9.1
-Twisted==18.4.0
+Twisted==22.10.0
 txaio==2.10.0
 urllib3==1.24.2
 virtualenv==16.0.0
